@@ -11,17 +11,20 @@
       background: linear-gradient(135deg, #0f172a, #020617);
       color: #fff;
     }
+
     header {
       text-align: center;
       padding: 60px 20px;
       background: #0b1b33;
       box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
+
     header h1 {
       font-size: 3em;
       color: #22d3ee;
       margin-bottom: 10px;
     }
+
     .sections {
       display: flex;
       flex-direction: column;
@@ -29,6 +32,7 @@
       gap: 20px;
       padding: 40px 20px;
     }
+
     .section {
       background: #020617cc;
       border: 2px solid #22d3ee;
@@ -38,31 +42,38 @@
       padding: 15px 20px;
       transition: transform 0.2s, box-shadow 0.2s;
     }
+
     .section:hover {
       transform: scale(1.02);
       box-shadow: 0 0 20px #22d3eeaa;
     }
+
     .section h2 {
       color: #22d3ee;
       margin: 0;
       font-size: 1.5em;
     }
+
     .content {
       margin-top: 10px;
       color: #cbd5f5;
       font-size: 1em;
       line-height: 1.5em;
     }
+
     .link-home {
       display: inline-block;
       margin-top: 10px;
       color: #22d3ee;
       text-decoration: none;
       font-weight: bold;
+      font-size: 1.1em;
     }
+
     .link-home:hover {
       text-decoration: underline;
     }
+
     footer {
       text-align: center;
       padding: 30px;
@@ -75,25 +86,41 @@
 
 <header>
   <h1>🛒 MediaMC Store</h1>
+  <p>Scopri gli oggetti e i pacchetti disponibili sul nostro server!</p>
 </header>
 
 <div class="sections">
 
+  <!-- Sezione Oggetti -->
   <div class="section">
-    <h2>Sezione 1</h2>
+    <h2>Oggetti e Potenziamenti</h2>
     <div class="content">
-      Qui puoi inserire tutti gli oggetti, pacchetti o servizi acquistabili sul server.
+      Qui puoi acquistare oggetti speciali, kit e potenziamenti per migliorare la tua esperienza su MediaMC.
+      Aggiornamenti regolari garantiscono sempre novità e funzionalità esclusive.
     </div>
   </div>
 
+  <!-- Sezione Cosmetici -->
   <div class="section">
-    <h2>Sezione 2</h2>
+    <h2>Cosmetici e Personalizzazioni</h2>
     <div class="content">
-      Altra categoria dello store: potenziamenti, cosmetici, abbonamenti ecc.
+      Personalizza il tuo personaggio con skin, effetti particellari, cappelli e altri cosmetici esclusivi!
+      Tutto pensato per rendere unica la tua esperienza sul server.
     </div>
   </div>
 
+  <!-- Sezione Abbonamenti -->
+  <div class="section">
+    <h2>Abbonamenti Premium</h2>
+    <div class="content">
+      Abbonati per ottenere vantaggi speciali come slot extra, priorità nelle partite e accesso a modalità esclusive.
+      Perfetto per chi vuole vivere il server al massimo.
+    </div>
+  </div>
+
+  <!-- Link Home -->
   <a class="link-home" href="index.html">← Torna alla Home</a>
+
 </div>
 
 <footer>
