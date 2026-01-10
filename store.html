@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{
-  margin:0;font-family:'Segoe UI',Arial;
+  margin:0;font-family:'Segoe UI',Arial,sans-serif;
   background:linear-gradient(135deg,#0ea5e9,#020617);
-  color:#fff;overflow-x:hidden
+  color:#fff;overflow-x:hidden;
 }
 .side-glow{
   position:fixed;top:-50%;width:120px;height:200%;
@@ -18,37 +18,25 @@ body{
 .left{left:-50px}.right{right:-50px;animation-delay:5s}
 @keyframes float{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
 
-header{text-align:center;padding:60px 20px;background:rgba(2,6,23,.85);position:relative}
-h1{color:#38bdf8}
-#userInfo{position:absolute;top:20px;right:20px;font-weight:bold;display:flex;gap:10px;align-items:center}
+header{
+  text-align:center;padding:60px 20px;background:rgba(2,6,23,.85);position:relative;
+}
+header h1{color:#38bdf8;margin:0}
+#nickDisplay{position:absolute;top:20px;left:20px;font-weight:bold;}
+#logoutBtn{position:absolute;top:20px;left:160px;background:#ef4444;color:#fff;padding:4px 8px;border:none;border-radius:6px;cursor:pointer;}
+
+.container{max-width:1100px;margin:auto;padding:30px;display:none}
+.categories{display:flex;gap:15px;flex-wrap:wrap}
+.cat{cursor:pointer;padding:10px;border:2px solid #38bdf8;border-radius:10px;transition:.3s}
+.cat:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px;}
+.product{border:2px solid #38bdf8;border-radius:10px;padding:10px;cursor:pointer;transition:.2s;position:relative;}
+.product:hover{box-shadow:0 0 20px rgba(56,189,248,.6);}
+.productDesc{display:none;margin-top:5px;color:#bae6fd;font-size:.9em;}
 button{
-  background:#38bdf8;border:none;color:#fff;
-  padding:6px 10px;border-radius:6px;cursor:pointer
+  background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:5px
 }
 #cartBtn{position:fixed;top:20px;right:20px;z-index:10}
-
-.container{max-width:1100px;margin:auto;padding:30px}
-.box{
-  background:rgba(2,6,23,.8);
-  border:2px solid #38bdf8;
-  border-radius:14px;
-  padding:15px;
-  margin:15px 0;
-  transition:.3s
-}
-.box:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
-
-.categories{display:flex;gap:15px;flex-wrap:wrap}
-.cat{cursor:pointer}
-
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.product{
-  border:1px solid #38bdf8;
-  border-radius:10px;
-  padding:10px;
-  cursor:pointer;
-}
-.productDesc{display:none;margin-top:5px;color:#bae6fd;font-size:0.9em}
 </style>
 </head>
 <body>
@@ -58,94 +46,94 @@ button{
 
 <header>
 <h1>🛒 MediaMC Store</h1>
-<div id="userInfo" style="display:none">
-  <span id="nickDisplay"></span>
-  <button onclick="logout()">Logout</button>
-  <button onclick="location.href='cart.html'">🛒 Carrello</button>
-</div>
-<p id="loginPrompt">Inserisci il tuo nick Minecraft per continuare</p>
-<input id="nickInput" placeholder="Nick Minecraft">
-<button onclick="enterStore()">Entra</button>
+<div id="nickDisplay"></div>
+<button id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
 </header>
 
-<div class="container" id="store" style="display:none">
-  <div class="box">
-    <h2>Categorie</h2>
-    <div class="categories" id="cats"></div>
-  </div>
+<!-- LOGIN MODAL -->
+<div id="loginModal" style="display:block;text-align:center;margin-top:100px;">
+  <input id="nickInput" placeholder="Inserisci il tuo nick Minecraft" style="padding:8px;border-radius:6px;border:none;width:220px;">
+  <button onclick="enterStore()">Entra</button>
+</div>
 
-  <div class="box">
-    <h2>Prodotti</h2>
-    <div class="products" id="products"></div>
-  </div>
+<button id="cartBtn" onclick="location.href='cart.html'" style="display:none;">🛒 Carrello</button>
 
-  <div id="staffLogin">
-    <button onclick="location.href='staff.html'">⚙️ Pannello Staff</button>
-  </div>
+<div class="container" id="store">
+  <h2>Categorie</h2>
+  <div class="categories" id="cats"></div>
+
+  <h2>Prodotti</h2>
+  <div class="products" id="products"></div>
 </div>
 
 <script>
+let nick='';
+
+// --- LOGIN ---
 function enterStore(){
   const n=document.getElementById('nickInput').value.trim();
-  if(!n){alert("Inserisci il nick Minecraft");return;}
-  sessionStorage.clear();
-  sessionStorage.setItem('nick',n);
-  document.querySelector('header p').style.display='none';
-  document.getElementById('nickInput').style.display='none';
-  document.querySelector('header button').style.display='none';
+  if(!n){alert("Inserisci il nick Minecraft"); return;}
+  nick=n;
+  document.getElementById('loginModal').style.display='none';
   document.getElementById('store').style.display='block';
-  document.getElementById('userInfo').style.display='flex';
-  document.getElementById('nickDisplay').textContent=n;
-  load();
+  document.getElementById('cartBtn').style.display='block';
+  document.getElementById('nickDisplay').textContent='Nick: '+nick;
+  document.getElementById('logoutBtn').style.display='inline-block';
+  loadStore();
 }
 
+// --- LOGOUT ---
 function logout(){
-  sessionStorage.clear();
-  location.reload();
+  if(!confirm('Vuoi effettuare il logout?')) return;
+  nick='';
+  document.getElementById('loginModal').style.display='block';
+  document.getElementById('store').style.display='none';
+  document.getElementById('cartBtn').style.display='none';
+  document.getElementById('nickDisplay').textContent='';
+  document.getElementById('logoutBtn').style.display='none';
 }
 
-function load(){
+// --- CARICAMENTO STORE ---
+function loadStore(){
   const cats=JSON.parse(localStorage.getItem('categories'))||['Duels','Bedwars'];
   const prods=JSON.parse(localStorage.getItem('products'))||[];
   const cdiv=document.getElementById('cats');
   cdiv.innerHTML='';
   cats.forEach(c=>{
     const d=document.createElement('div');
-    d.className='box cat';
+    d.className='cat';
     d.textContent=c;
-    d.onclick=()=>show(c);
+    d.onclick=()=>showProducts(c);
     cdiv.appendChild(d);
   });
-  show(cats[0]);
+  showProducts(cats[0]);
 }
 
-function show(cat){
+// --- MOSTRA PRODOTTI ---
+function showProducts(cat){
   const pdiv=document.getElementById('products');
   const prods=JSON.parse(localStorage.getItem('products'))||[];
   pdiv.innerHTML='';
   prods.filter(p=>p.category===cat).forEach((p,idx)=>{
-    const div=document.createElement('div');
-    div.className='product';
-    div.innerHTML=`
-      <b>${p.name}</b><br>
-      €${p.price}
-      <div class="productDesc">${p.desc||''}</div>
-      <button onclick='add(${JSON.stringify(p)})'>Aggiungi</button>
-    `;
-    div.querySelector('.product').onclick=()=>{
-      const desc=div.querySelector('.productDesc');
-      desc.style.display = desc.style.display==='block'?'none':'block';
-    }
-    pdiv.appendChild(div);
+    const prodDiv=document.createElement('div');
+    prodDiv.className='product';
+    prodDiv.innerHTML=`<b>${p.name}</b><br>€${p.price}<div class="productDesc">${p.desc||''}</div><button onclick='addToCart(${idx},"${cat}")'>Aggiungi</button>`;
+    prodDiv.onclick=()=>{
+      const desc=prodDiv.querySelector('.productDesc');
+      if(desc) desc.style.display = desc.style.display==='block'?'none':'block';
+    };
+    pdiv.appendChild(prodDiv);
   });
 }
 
-function add(p){
-  const nick=sessionStorage.getItem('nick');
+// --- AGGIUNGI AL CARRELLO ---
+function addToCart(idx,cat){
+  const prods=JSON.parse(localStorage.getItem('products'))||[];
+  const p=prods.find(pr=>pr.category===cat && pr.idx===idx) || prods[idx];
   let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
   cart.push(p);
   localStorage.setItem('cart_'+nick,JSON.stringify(cart));
-  alert("Aggiunto al carrello");
+  alert('Aggiunto al carrello');
 }
 </script>
 </body>
