@@ -5,55 +5,52 @@
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;overflow-x:hidden}
-.side-glow{position:fixed;top:-50%;width:120px;height:200%;background:linear-gradient(180deg,transparent,rgba(56,189,248,.4),transparent);filter:blur(45px);animation:float 10s linear infinite;z-index:-1}
-.left{left:-50px}.right{right:-50px;animation-delay:5s}
-@keyframes float{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
-header{display:flex;justify-content:flex-start;align-items:center;padding:20px;background:rgba(2,6,23,.85)}
-#nickDisplay{font-weight:bold;padding:6px 10px;border-radius:6px;background:#1e3a8a;color:#fff;display:flex;align-items:center;gap:10px}
-#logoutBtn{background:#38bdf8;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer} /* tasto più chiaro del rettangolo */
-.container{max-width:1100px;margin:20px auto;padding:20px;display:none}
-.box{background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:12px;padding:15px;margin:15px 0;transition:.3s;cursor:pointer}
-.box:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
-.categories{display:flex;gap:15px;flex-wrap:wrap}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.product{border:1px solid #38bdf8;border-radius:10px;padding:10px;position:relative}
+body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;overflow-x:hidden;}
+header{padding:20px;background:rgba(2,6,23,.85);display:flex;justify-content:space-between;align-items:center;position:relative;}
+#userBox{display:flex;align-items:center;gap:10px;}
+#nickDisplay{font-family:'Segoe UI',Verdana,sans-serif;font-weight:bold;font-size:1.1em;padding:6px 12px;border:2px solid #38bdf8;border-radius:8px;background:rgba(2,6,23,0.8);}
+#logoutBtn{background:#1e40af;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-family:'Segoe UI',Verdana,sans-serif;font-weight:bold;cursor:pointer;transition:.3s;display:none;}
+.container{max-width:1100px;margin:20px auto;padding:20px}
+.box{background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:12px;padding:15px;margin:15px 0;transition:.3s;cursor:pointer;}
+.box:hover{box-shadow:0 0 20px rgba(56,189,248,.6);}
+.categories{display:flex;gap:15px;flex-wrap:wrap;}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;}
+.product{border:1px solid #38bdf8;border-radius:10px;padding:10px;position:relative;cursor:pointer;}
+.productDesc{display:none;margin-top:5px;font-size:0.95em;color:#bae6fd;}
 button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:5px}
 #cartBtn{position:fixed;top:20px;right:20px;z-index:10}
-#staffLoginBtn{margin-top:30px;font-size:.9em;display:block;text-align:center}
-.modalBg{display:none;justify-content:center;align-items:center;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999}
-.modalContent{background:#020617;padding:30px;border-radius:12px;border:2px solid #38bdf8;width:90%;max-width:400px;text-align:center}
+#staffLogin{position:fixed;bottom:20px;left:20px;}
+.modalBg{display:flex;justify-content:center;align-items:center;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999;display:none;}
+.modalContent{background:#020617;padding:30px;border-radius:12px;border:2px solid #38bdf8;width:90%;max-width:400px;text-align:center;}
+input{padding:6px;border-radius:6px;border:none;width:80%;margin-bottom:10px;}
 </style>
 </head>
 <body>
 
-<div class="side-glow left"></div>
-<div class="side-glow right"></div>
-
 <header>
-<div id="nickDisplay">
-  <span id="playerName"></span>
-  <button id="logoutBtn" onclick="logout()" style="display:none">Logout</button>
-</div>
+  <div id="userBox">
+    <div id="nickDisplay"></div>
+    <button id="logoutBtn" onclick="logout()">Logout</button>
+  </div>
 </header>
 
-<div class="container" id="storeContainer">
+<div class="container" id="store" style="display:none;">
   <div class="box">
     <h2>Categorie</h2>
     <div class="categories" id="cats"></div>
   </div>
-
   <div class="box">
     <h2>Prodotti</h2>
     <div class="products" id="products"></div>
   </div>
-
-  <div id="staffLoginBtn">
-    <button onclick="openStaffLogin()">⚙️ Apri Pannello Staff</button>
-  </div>
 </div>
 
 <button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
+
+<!-- STAFF PANEL piccolo in basso -->
+<div id="staffLogin">
+  <button onclick="openStaffLogin()">⚙️ Pannello Staff</button>
+</div>
 
 <!-- MODAL NICK -->
 <div class="modalBg" id="nickModal">
@@ -65,12 +62,12 @@ button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:
   </div>
 </div>
 
-<!-- MODAL STAFF LOGIN -->
+<!-- MODAL STAFF -->
 <div class="modalBg" id="staffModal">
   <div class="modalContent">
     <h2>Login Staff</h2>
-    <input type="password" id="staffPass" placeholder="Password Staff">
-    <br><br>
+    <input type="password" id="staffPass" placeholder="Password">
+    <br>
     <button onclick="loginStaff()">Accedi</button>
     <button onclick="closeModal('staffModal')">Chiudi</button>
   </div>
@@ -92,18 +89,18 @@ function logout(){
 }
 function initStore(){
   document.getElementById('nickModal').style.display='none';
-  document.getElementById('storeContainer').style.display='block';
-  document.getElementById('playerName').textContent = `Player: ${nick}`;
-  document.getElementById('logoutBtn').style.display='inline-block';
+  document.getElementById('store').style.display='block';
+  document.getElementById('nickDisplay').textContent = `Player: ${nick}`;
+  document.getElementById('logoutBtn').style.display='inline';
   loadStore();
 }
 if(nick){ initStore(); } else { document.getElementById('nickModal').style.display='flex'; }
 
-// --- STORE ---
+// --- Store ---
 function loadStore(){
   const cats = JSON.parse(localStorage.getItem('categories')) || ['Duels','Bedwars'];
   const prods = JSON.parse(localStorage.getItem('products')) || [];
-
+  
   const catsDiv = document.getElementById('cats');
   catsDiv.innerHTML='';
   cats.forEach(c=>{
@@ -113,28 +110,30 @@ function loadStore(){
     div.onclick=()=>showProducts(c);
     catsDiv.appendChild(div);
   });
-  // Non mostrare prodotti fino a click su categoria
+  showProducts(cats[0]);
 }
 
 function showProducts(cat){
   const prods = JSON.parse(localStorage.getItem('products')) || [];
   const pdiv = document.getElementById('products');
   pdiv.innerHTML='';
-  prods.filter(p=>p.category===cat).forEach(p=>{
+  prods.filter(p=>p.category===cat).forEach((p,idx)=>{
     const div = document.createElement('div');
     div.className='product';
     div.innerHTML=`<b>${p.name}</b> - €${p.price}<br>
-      <button onclick='addCart(${JSON.stringify(p)})'>Aggiungi</button>
-      <div class="desc" style="margin-top:5px;display:none">${p.desc || ''}</div>`;
-    div.onclick = () => {
-      const d = div.querySelector('.desc');
-      d.style.display = d.style.display==='none'?'block':'none';
+      <div class="productDesc">${p.desc||''}</div>
+      <button onclick='addCart(${JSON.stringify(p)})'>Aggiungi</button>`;
+    div.onclick = (e)=>{
+      if(e.target.tagName!=='BUTTON'){
+        const desc = div.querySelector('.productDesc');
+        desc.style.display = desc.style.display==='block' ? 'none' : 'block';
+      }
     };
     pdiv.appendChild(div);
   });
 }
 
-// --- CARRELLO ---
+// --- Carrello ---
 function addCart(p){
   let cart = JSON.parse(localStorage.getItem('cart_'+nick)) || [];
   cart.push(p);
@@ -143,18 +142,17 @@ function addCart(p){
 }
 
 // --- STAFF ---
-function openStaffLogin(){ document.getElementById('staffModal').style.display='flex'; }
+function openStaffLogin(){
+  document.getElementById('staffModal').style.display='flex';
+}
+function closeModal(id){ document.getElementById(id).style.display='none'; }
 function loginStaff(){
   const pass = document.getElementById('staffPass').value;
   if(pass==='staff123'){
     closeModal('staffModal');
-    // Mostra contenuto completo staff come prima
-    window.location.href='staff.html';
-  } else { alert('Password errata'); }
+    location.href='staff.html'; // rimanda al pannello completo
+  } else alert('Password errata');
 }
-
-// --- MODAL ---
-function closeModal(id){ document.getElementById(id).style.display='none'; }
 </script>
 
 </body>
