@@ -1,131 +1,68 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>MediaMC Store</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #0f172a, #020617);
-      color: #fff;
-    }
+<meta charset="UTF-8">
+<title>MediaMC Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    header {
-      text-align: center;
-      padding: 60px 20px;
-      background: #0b1b33;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
+<style>
+/* STILE IDENTICO A INDEX */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #0ea5e9, #020617);
+  color: #fff;
+  overflow-x: hidden;
+}
+.side-glow { position: fixed; top:-50%; width:120px; height:200%;
+background: linear-gradient(180deg,transparent,rgba(56,189,248,.4),transparent);
+filter: blur(45px); animation: floatGlow 10s linear infinite; z-index:-1; }
+.left{left:-50px;} .right{right:-50px; animation-delay:5s;}
+@keyframes floatGlow{0%{transform:translateY(-20%);}100%{transform:translateY(20%);} }
 
-    header h1 {
-      font-size: 3em;
-      color: #22d3ee;
-      margin-bottom: 10px;
-    }
-
-    .sections {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      padding: 40px 20px;
-    }
-
-    .section {
-      background: #020617cc;
-      border: 2px solid #22d3ee;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 600px;
-      padding: 15px 20px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .section:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 20px #22d3eeaa;
-    }
-
-    .section h2 {
-      color: #22d3ee;
-      margin: 0;
-      font-size: 1.5em;
-    }
-
-    .content {
-      margin-top: 10px;
-      color: #cbd5f5;
-      font-size: 1em;
-      line-height: 1.5em;
-    }
-
-    .link-home {
-      display: inline-block;
-      margin-top: 10px;
-      color: #22d3ee;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1.1em;
-    }
-
-    .link-home:hover {
-      text-decoration: underline;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px;
-      font-size: 0.9em;
-      color: #94a3b8;
-    }
-  </style>
+header{padding:70px 20px;text-align:center;background:rgba(2,6,23,.85);}
+h1{color:#38bdf8;}
+.section{
+  background:rgba(2,6,23,.8);
+  border:2px solid #38bdf8;
+  border-radius:14px;
+  padding:20px;
+  margin:20px auto;
+  max-width:650px;
+}
+a{color:#38bdf8;font-weight:bold;text-decoration:none;}
+footer{text-align:center;padding:30px;color:#94a3b8;}
+</style>
 </head>
+
 <body>
+<div class="side-glow left"></div>
+<div class="side-glow right"></div>
 
 <header>
-  <h1>🛒 MediaMC Store</h1>
-  <p>Scopri gli oggetti e i pacchetti disponibili sul nostro server!</p>
+<h1>🛒 MediaMC Store</h1>
+<p>Supporta il server e ottieni vantaggi esclusivi</p>
 </header>
 
-<div class="sections">
-
-  <!-- Sezione Oggetti -->
-  <div class="section">
-    <h2>Oggetti e Potenziamenti</h2>
-    <div class="content">
-      Qui puoi acquistare oggetti speciali, kit e potenziamenti per migliorare la tua esperienza su MediaMC.
-      Aggiornamenti regolari garantiscono sempre novità e funzionalità esclusive.
-    </div>
-  </div>
-
-  <!-- Sezione Cosmetici -->
-  <div class="section">
-    <h2>Cosmetici e Personalizzazioni</h2>
-    <div class="content">
-      Personalizza il tuo personaggio con skin, effetti particellari, cappelli e altri cosmetici esclusivi!
-      Tutto pensato per rendere unica la tua esperienza sul server.
-    </div>
-  </div>
-
-  <!-- Sezione Abbonamenti -->
-  <div class="section">
-    <h2>Abbonamenti Premium</h2>
-    <div class="content">
-      Abbonati per ottenere vantaggi speciali come slot extra, priorità nelle partite e accesso a modalità esclusive.
-      Perfetto per chi vuole vivere il server al massimo.
-    </div>
-  </div>
-
-  <!-- Link Home -->
-  <a class="link-home" href="index.html">← Torna alla Home</a>
-
+<div class="section">
+<h2>Oggetti & Kit</h2>
+Accesso a kit speciali e potenziamenti unici.
 </div>
 
-<footer>
-  © 2026 MediaMC Network
-</footer>
+<div class="section">
+<h2>Cosmetici</h2>
+Skin, particelle ed effetti esclusivi.
+</div>
 
+<div class="section">
+<h2>Premium</h2>
+Priorità, vantaggi e accessi speciali.
+</div>
+
+<div class="section">
+<a href="index.html">← Torna alla Home</a>
+</div>
+
+<footer>© 2026 MediaMC Network</footer>
 </body>
 </html>
