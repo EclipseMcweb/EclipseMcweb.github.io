@@ -141,42 +141,52 @@ let giftCodeUsed='';
 let orders=JSON.parse(localStorage.getItem('orders'))||[];
 let giftCards=JSON.parse(localStorage.getItem('giftCards'))||{};
 
+// LOGIN FUNZIONANTE
 function loginUser(){
-  nick=nickInput.value.trim();
+  const nickEl = document.getElementById("nickInput");
+  nick = nickEl.value.trim();
   if(!nick) return alert('Inserisci il nick');
-  login.style.display='none';
-  store.style.display='block';
-  cart.style.display='block';
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("store").style.display = "block";
+  document.getElementById("cart").style.display = "block";
+  render(); // Aggiorna carrello subito
 }
 
+// AGGIUNGI AL CARRELLO
 function add(name,price){
   cart.push({name,price});
   render();
 }
 
+// RENDER CARRELLO
 function render(){
+  const cartList = document.getElementById("cartList");
+  const totalEl = document.getElementById("total");
   cartList.innerHTML='';
   let tot=0;
   cart.forEach((i,idx)=>{
     tot+=i.price;
-    cartList.innerHTML+=`${i.name} €${i.price}
-    <button onclick="cart.splice(${idx},1);render()">X</button><br>`;
+    cartList.innerHTML+=`${i.name} €${i.price} <button onclick="cart.splice(${idx},1);render()">X</button><br>`;
   });
   tot=Math.max(0,tot-giftValue);
-  total.textContent=tot;
+  totalEl.textContent=tot;
 }
 
+// APPLICA GIFT CARD
 function applyGift(){
-  const code=giftInput.value.trim().toUpperCase();
+  const code = document.getElementById("giftInput").value.trim().toUpperCase();
+  const giftMsg = document.getElementById("giftMsg");
   if(!giftCards[code]) return giftMsg.textContent='Gift card non valida';
   if(giftCards[code].used) return giftMsg.textContent='Gift card già usata';
 
-  giftValue=giftCards[code].value;
-  giftCodeUsed=code;
+  giftValue = giftCards[code].value;
+  giftCodeUsed = code;
   giftMsg.textContent=`Gift card applicata: -€${giftValue}`;
   render();
 }
 
+// CHECKOUT
 function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
 
@@ -193,10 +203,10 @@ function checkout(){
     localStorage.setItem('giftCards',JSON.stringify(giftCards));
   }
 
-  oid.textContent=id;
-  oid2.textContent=id;
-  payTotal.textContent=tot;
-  payment.style.display='block';
+  document.getElementById("oid").textContent=id;
+  document.getElementById("oid2").textContent=id;
+  document.getElementById("payTotal").textContent=tot;
+  document.getElementById("payment").style.display='block';
 }
 </script>
 
