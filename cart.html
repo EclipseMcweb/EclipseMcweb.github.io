@@ -2,157 +2,85 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>MediaMC Carrello</title>
+<title>Carrello MediaMC</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{
-  margin:0;
-  font-family:'Segoe UI',Arial,sans-serif;
-  background: linear-gradient(135deg,#0ea5e9,#020617);
-  color:#fff;
-}
-header{
-  text-align:center;
-  padding:40px 20px;
-  background:rgba(2,6,23,0.9);
-}
-header h1{margin:0;color:#38bdf8;}
-header .userInfo{
-  margin-top:10px;
-  text-align:left;
-  font-weight:bold;
-}
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
 section{
-  max-width:600px;
-  margin:30px auto;
-  background:rgba(2,6,23,0.85);
-  padding:20px;
-  border-radius:12px;
+  max-width:500px;
+  margin:40px auto;
+  background:rgba(2,6,23,.85);
   border:2px solid #38bdf8;
+  border-radius:12px;
+  padding:20px
 }
-.productItem{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px;
-  margin:8px 0;
-  background:rgba(0,10,30,0.7);
-  border-radius:6px;
-}
-button{
-  cursor:pointer;
-  border:none;
-  border-radius:6px;
-  padding:6px 12px;
-  margin-left:5px;
-  font-weight:bold;
-  background:#38bdf8;
-  color:#fff;
-}
-button.delete{background:#ef4444;}
-input{
-  padding:6px;
-  border-radius:6px;
-  border:none;
-  width:90%;
-  margin:5px 0;
-}
+.item{display:flex;justify-content:space-between;margin:6px 0}
+button{cursor:pointer}
 </style>
 </head>
 <body>
 
-<header>
-<h1>🛒 Carrello MediaMC</h1>
-<div class="userInfo" id="nickDisplay"></div>
-</header>
-
 <section>
-  <h2>Prodotti</h2>
-  <div id="cartList"></div>
-  <h3>Totale: €<span id="total">0</span></h3>
+<h2>🛒 Carrello</h2>
+<div id="list"></div>
+<p><b>Totale:</b> €<span id="tot">0</span></p>
 
-  <h3>Gift Card</h3>
-  <input id="giftInput" placeholder="Inserisci Gift Card">
-  <button onclick="applyGift()">Applica</button>
-  <p id="giftMsg"></p>
+<h3>Giftcard</h3>
+<input id="gift">
+<button onclick="applyGift()">Applica</button>
+<p id="msg"></p>
 
-  <button onclick="checkout()">Procedi Ordine</button>
-  <button class="delete" onclick="clearCart()">🗑️ Svuota Carrello</button>
-  <hr>
-  <button onclick="location.href='store.html'">← Torna allo Store</button>
+<button onclick="checkout()">Procedi ordine</button>
+<button onclick="location.href='store.html'">← Torna allo store</button>
 </section>
 
 <script>
-const nick = sessionStorage.getItem('nick');
-if(!nick){ alert('Devi prima inserire il nick nello store'); location.href='store.html'; }
-document.getElementById('nickDisplay').textContent = `Player: ${nick}`;
+const nick=sessionStorage.getItem('nick');
+if(!nick) location.href='store.html';
 
-let cart = JSON.parse(localStorage.getItem('cart_'+nick)) || [];
-let giftValue = 0;
-let giftCards = JSON.parse(localStorage.getItem('giftCards'))||[];
+let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
+let gift=0;
 
 function render(){
-  const cartList=document.getElementById('cartList');
-  let tot=0;
-  cartList.innerHTML='';
-  if(cart.length===0){
-    cartList.textContent='Carrello vuoto';
-  } else {
-    cart.forEach((p,idx)=>{
-      tot+=p.price;
-      const div=document.createElement('div');
-      div.className='productItem';
-      div.innerHTML=`<span><b>${p.name}</b> - €${p.price}</span>
-        <button class="delete" onclick="removeItem(${idx})">X</button>`;
-      cartList.appendChild(div);
-    });
-  }
-  tot=Math.max(0, tot-giftValue);
-  document.getElementById('total').textContent=tot;
-}
-function removeItem(idx){
-  cart.splice(idx,1);
-  localStorage.setItem('cart_'+nick,JSON.stringify(cart));
-  render();
+  let t=0;
+  const l=document.getElementById('list');
+  l.innerHTML='';
+  cart.forEach((p,i)=>{
+    t+=p.price;
+    l.innerHTML+=`<div class="item">${p.name} €${p.price} <button onclick="rem(${i})">X</button></div>`;
+  });
+  t=Math.max(0,t-gift);
+  document.getElementById('tot').textContent=t;
 }
 render();
 
+function rem(i){
+  cart.splice(i,1);
+  localStorage.setItem('cart_'+nick,JSON.stringify(cart));
+  render();
+}
+
 function applyGift(){
-  const code=document.getElementById('giftInput').value.trim().toUpperCase();
-  const gc=giftCards.find(g=>g.name.toUpperCase()===code);
-  const msg=document.getElementById('giftMsg');
-  if(!gc){ msg.textContent='Gift card non valida'; return; }
-  if(gc.used){ msg.textContent='Gift card già usata'; return; }
-  giftValue=gc.value;
-  gc.used=true;
-  localStorage.setItem('giftCards',JSON.stringify(giftCards));
-  msg.textContent=`Gift card applicata: -€${giftValue}`;
+  const code=document.getElementById('gift').value.trim();
+  const g=JSON.parse(localStorage.getItem('giftCards'))||[];
+  const f=g.find(x=>x.name===code && !x.used);
+  if(!f) return msg.textContent="Gift non valida";
+  f.used=true; gift=f.value;
+  localStorage.setItem('giftCards',JSON.stringify(g));
+  msg.textContent="Gift applicata";
   render();
 }
 
 function checkout(){
-  if(cart.length===0){ alert('Carrello vuoto'); return; }
-  const tot = cart.reduce((s,p)=>s+p.price,0) - giftValue;
-  const id = 'MM-'+Math.floor(Math.random()*100000);
-  localStorage.setItem('checkoutDataList',JSON.stringify([
-    ...(JSON.parse(localStorage.getItem('checkoutDataList'))||[]),
-    {id,nick,cart,total:tot}
-  ]));
-  localStorage.removeItem('cart_'+nick);
-  cart=[];
-  giftValue=0;
-  alert('Ordine effettuato!');
-  location.href='checkout.html?id='+id;
-}
-
-function clearCart(){
-  if(confirm('Svuotare il carrello?')){
-    cart=[];
-    localStorage.removeItem('cart_'+nick);
-    render();
-  }
+  if(cart.length===0) return alert("Carrello vuoto");
+  const id="MM-"+Math.floor(Math.random()*99999);
+  const tot=parseFloat(document.getElementById('tot').textContent);
+  const all=JSON.parse(localStorage.getItem('checkoutDataList'))||[];
+  all.push({id,nick,cart,total:tot});
+  localStorage.setItem('checkoutDataList',JSON.stringify(all));
+  localStorage.setItem('checkoutData',JSON.stringify({id,nick,cart,total:tot}));
+  location.href='checkout.html';
 }
 </script>
-
 </body>
 </html>
