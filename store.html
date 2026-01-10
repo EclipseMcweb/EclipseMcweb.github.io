@@ -16,20 +16,18 @@ body{
 
 /* HEADER */
 header{
-  padding:15px 20px;
+  padding:14px 20px;
   background:rgba(2,6,23,.9);
   display:flex;
-  justify-content:flex-start;
   align-items:center;
-  gap:12px;
 }
 
 /* PLAYER BOX */
 #playerBox{
-  display:flex;
+  display:none;
   align-items:center;
   gap:10px;
-  background:rgba(2,6,23,.8);
+  background:rgba(2,6,23,.85);
   border:2px solid #38bdf8;
   padding:6px 12px;
   border-radius:10px;
@@ -37,19 +35,21 @@ header{
 }
 
 #logoutBtn{
-  background:#1e3a8a;
+  background:#1e40af;
   border:none;
   color:#fff;
-  padding:4px 8px;
+  padding:4px 10px;
   border-radius:6px;
   cursor:pointer;
+  font-weight:600;
 }
 
 /* STORE */
 .container{
   max-width:1100px;
-  margin:25px auto;
+  margin:30px auto;
   padding:20px;
+  display:none;
 }
 
 .box{
@@ -57,7 +57,7 @@ header{
   border:2px solid #38bdf8;
   border-radius:14px;
   padding:15px;
-  margin-bottom:20px;
+  margin-bottom:22px;
 }
 
 .categories{
@@ -68,7 +68,7 @@ header{
 
 .category{
   cursor:pointer;
-  padding:10px 15px;
+  padding:10px 16px;
   border:1px solid #38bdf8;
   border-radius:8px;
 }
@@ -86,6 +86,7 @@ header{
   cursor:context-menu;
 }
 
+/* CARRELLO */
 #cartBtn{
   position:fixed;
   top:18px;
@@ -96,6 +97,23 @@ header{
   padding:10px 14px;
   border-radius:50px;
   cursor:pointer;
+  z-index:10;
+}
+
+/* STAFF */
+#staffBtn{
+  margin-top:40px;
+  text-align:center;
+}
+
+#staffBtn button{
+  background:transparent;
+  border:1px solid #38bdf8;
+  color:#38bdf8;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:.85em;
 }
 
 /* MODAL */
@@ -103,7 +121,7 @@ header{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.75);
   justify-content:center;
   align-items:center;
   z-index:999;
@@ -116,6 +134,15 @@ header{
   padding:25px;
   width:90%;
   max-width:420px;
+  text-align:center;
+}
+
+.modalContent input{
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  margin-top:10px;
 }
 
 .modalContent button{
@@ -125,15 +152,7 @@ header{
   padding:8px 14px;
   border-radius:8px;
   cursor:pointer;
-}
-
-/* NICK MODAL */
-#nickModal input{
-  width:100%;
-  padding:8px;
-  border-radius:6px;
-  border:none;
-  margin-top:10px;
+  margin-top:15px;
 }
 </style>
 </head>
@@ -141,7 +160,7 @@ header{
 <body>
 
 <header>
-  <div id="playerBox" style="display:none">
+  <div id="playerBox">
     <span id="nickDisplay"></span>
     <button id="logoutBtn" onclick="logout()">Logout</button>
   </div>
@@ -149,7 +168,7 @@ header{
 
 <button id="cartBtn" onclick="location.href='cart.html'">🛒</button>
 
-<div class="container">
+<div class="container" id="store">
 
   <div class="box">
     <h2>Categorie</h2>
@@ -161,6 +180,10 @@ header{
     <div class="products" id="products"></div>
   </div>
 
+  <div id="staffBtn">
+    <button onclick="location.href='staff.html'">⚙️ Apri pannello staff</button>
+  </div>
+
 </div>
 
 <!-- MODAL NICK -->
@@ -168,7 +191,6 @@ header{
   <div class="modalContent">
     <h2>Inserisci il tuo Nick</h2>
     <input id="nickInput" placeholder="Nick Minecraft">
-    <br><br>
     <button onclick="enterStore()">Entra</button>
   </div>
 </div>
@@ -176,18 +198,16 @@ header{
 <!-- MODAL PRODOTTO -->
 <div class="modalBg" id="productModal">
   <div class="modalContent">
-    <h2 id="modalTitle"></h2>
-    <p id="modalDesc"></p>
-    <p><b id="modalPrice"></b></p>
-    <div style="display:flex;justify-content:flex-end">
-      <button onclick="addFromModal()">Aggiungi al carrello</button>
-    </div>
+    <h2 id="mTitle"></h2>
+    <p id="mDesc"></p>
+    <p><b id="mPrice"></b></p>
+    <button onclick="addFromModal()">Aggiungi al carrello</button>
   </div>
 </div>
 
 <script>
-let nick = sessionStorage.getItem('nick');
-let selectedProduct = null;
+let nick=sessionStorage.getItem('nick');
+let selectedProduct=null;
 
 /* LOGIN */
 function enterStore(){
@@ -205,6 +225,7 @@ function logout(){
 
 function init(){
   document.getElementById('nickModal').style.display='none';
+  document.getElementById('store').style.display='block';
   document.getElementById('playerBox').style.display='flex';
   document.getElementById('nickDisplay').textContent='Player: '+nick;
   loadStore();
@@ -216,8 +237,6 @@ else document.getElementById('nickModal').style.display='flex';
 /* STORE */
 function loadStore(){
   const cats=JSON.parse(localStorage.getItem('categories'))||['Duels','Bedwars'];
-  const prods=JSON.parse(localStorage.getItem('products'))||[];
-
   const cdiv=document.getElementById('cats');
   cdiv.innerHTML='';
   cats.forEach(c=>{
@@ -227,7 +246,6 @@ function loadStore(){
     d.onclick=()=>showProducts(c);
     cdiv.appendChild(d);
   });
-
   document.getElementById('products').innerHTML='';
 }
 
@@ -235,7 +253,6 @@ function showProducts(cat){
   const prods=JSON.parse(localStorage.getItem('products'))||[];
   const pdiv=document.getElementById('products');
   pdiv.innerHTML='';
-
   prods.filter(p=>p.category===cat).forEach(p=>{
     const d=document.createElement('div');
     d.className='product';
@@ -251,9 +268,9 @@ function showProducts(cat){
 /* MODAL PRODOTTO */
 function openProductModal(p){
   selectedProduct=p;
-  document.getElementById('modalTitle').textContent=p.name;
-  document.getElementById('modalDesc').textContent=p.desc||'Nessuna descrizione';
-  document.getElementById('modalPrice').textContent='Prezzo: €'+p.price;
+  document.getElementById('mTitle').textContent=p.name;
+  document.getElementById('mDesc').textContent=p.desc||'Nessuna descrizione';
+  document.getElementById('mPrice').textContent='Prezzo: €'+p.price;
   document.getElementById('productModal').style.display='flex';
 }
 
@@ -266,8 +283,7 @@ function addFromModal(){
 }
 
 document.getElementById('productModal').onclick=e=>{
-  if(e.target.id==='productModal')
-    e.target.style.display='none';
+  if(e.target.id==='productModal') e.target.style.display='none';
 };
 </script>
 
