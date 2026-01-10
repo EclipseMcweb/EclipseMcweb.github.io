@@ -8,7 +8,7 @@
 body{
   margin:0;font-family:'Segoe UI',Arial;
   background:linear-gradient(135deg,#0ea5e9,#020617);
-  color:#fff;overflow-x:hidden
+  color:#fff;overflow-x:hidden;
 }
 .side-glow{
   position:fixed;top:-50%;width:120px;height:200%;
@@ -55,8 +55,25 @@ button{
 }
 
 #cartBtn{position:fixed;top:20px;right:20px;z-index:10}
-
 #staffLogin{margin-top:40px;text-align:center;font-size:.9em}
+
+/* MODAL NICK */
+.modalBg{
+  display:flex;justify-content:center;align-items:center;
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background: rgba(0,0,0,0.7); z-index:999;
+}
+.modalContent{
+  background:rgba(2,6,23,.95);padding:40px;
+  border-radius:12px;border:2px solid #38bdf8;text-align:center;
+}
+.modalContent input{
+  padding:12px;width:80%;font-size:1.2em;border-radius:8px;border:none;margin-top:15px;
+}
+.modalContent button{
+  padding:10px 20px;margin-top:15px;font-size:1.1em;
+  cursor:pointer;border-radius:8px;border:none;background:#38bdf8;color:#fff;
+}
 </style>
 </head>
 <body>
@@ -67,9 +84,6 @@ button{
 <header>
 <h1>🛒 MediaMC Store</h1>
 <div id="playerInfo"></div>
-<p id="enterPrompt">Inserisci il tuo nick Minecraft per entrare</p>
-<input id="nickInput" placeholder="Nick Minecraft">
-<button onclick="enterStore()">Entra</button>
 </header>
 
 <button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
@@ -90,19 +104,29 @@ button{
   </div>
 </div>
 
+<!-- MODAL NICK -->
+<div class="modalBg" id="nickModal">
+  <div class="modalContent">
+    <h2>Benvenuto su MediaMC</h2>
+    <p>Inserisci il tuo Nick Minecraft per continuare</p>
+    <input id="nickInput" placeholder="Nick Minecraft">
+    <br>
+    <button onclick="enterStore()">Entra</button>
+  </div>
+</div>
+
 <script>
 function enterStore(){
   const n=document.getElementById('nickInput').value.trim();
   if(!n){alert("Inserisci il nick Minecraft");return;}
-  sessionStorage.clear();
   sessionStorage.setItem('nick',n);
-  document.getElementById('enterPrompt').style.display='none';
-  document.getElementById('nickInput').style.display='none';
-  document.querySelector('header button').style.display='none';
-  document.getElementById('store').style.display='block';
+  document.getElementById('nickModal').style.display='none';
+
   const pi=document.getElementById('playerInfo');
   pi.style.display='block';
   pi.innerHTML=`${n} <button onclick="logout()">Logout</button>`;
+
+  document.getElementById('store').style.display='block';
   load();
 }
 
