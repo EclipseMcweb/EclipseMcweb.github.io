@@ -5,94 +5,123 @@
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff}
-header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.9)}
-h1{margin:0;color:#fff} h2{color:#38bdf8;margin-top:0}
-.category{background:#020617dd;border:2px solid #38bdf8;border-radius:12px;margin:15px auto;max-width:95%;cursor:pointer;padding:10px}
-.products{display:none;margin-top:10px}
-.product{display:flex;align-items:center;justify-content:space-between;margin:10px 0;background:rgba(2,6,23,.8);border-radius:8px;padding:10px}
-.product img{width:60px;height:60px;border-radius:6px;margin-right:10px}
-button{background:#38bdf8;border:none;border-radius:6px;padding:6px 12px;color:#fff;font-weight:bold;cursor:pointer}
-#login{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;z-index:200}
-#login div{background:#020617;padding:25px;border-radius:12px;text-align:center}
-input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff;}
+header{text-align:center;padding:50px 20px;background:rgba(2,6,23,0.9);box-shadow:0 4px 15px rgba(0,0,0,0.4);}
+h1{color:#fff;}
+.container{display:flex;gap:20px;max-width:1200px;margin:30px auto;}
+.shop{flex:3;display:flex;flex-wrap:wrap;gap:20px;}
+.productCard{background:rgba(2,6,23,0.85);padding:15px;border-radius:12px;width:calc(33% - 20px);box-shadow:0 0 15px #38bdf8aa;transition:.2s;}
+.productCard:hover{transform:scale(1.02);}
+.productCard img{width:100%;border-radius:8px;cursor:pointer;object-fit:cover;height:150px;}
+button{background:#38bdf8;border:none;border-radius:8px;padding:6px 10px;color:#fff;font-weight:bold;cursor:pointer;margin-top:5px;transition:.2s;}
+button:hover{transform:scale(1.05);}
+.cart{flex:1;background:rgba(2,6,23,0.9);padding:15px;border-radius:12px;position:sticky;top:20px;max-height:600px;overflow-y:auto;}
+.cart h3{text-align:center;color:#38bdf8;}
+.cartItem{display:flex;justify-content:space-between;margin-bottom:10px;background:rgba(30,64,175,0.8);padding:8px;border-radius:6px;}
+#total{margin-top:10px;font-weight:bold;text-align:right;color:#fff;}
+#notification{position:fixed;top:20px;right:20px;background:#22c55e;padding:10px 15px;border-radius:8px;display:none;z-index:1000;}
+/* MODAL IMMAGINE */
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;overflow:auto;background:rgba(0,0,0,0.7);}
+.modal-content{background:#1e40af;margin:10% auto;padding:20px;border-radius:15px;width:90%;max-width:500px;position:relative;}
+.close{position:absolute;top:10px;right:15px;color:#fff;font-size:22px;font-weight:bold;cursor:pointer;}
+.modal-content img{width:100%;border-radius:8px;}
 </style>
 </head>
 <body>
 
 <header>
 <h1>🛒 MediaMC Store</h1>
-<p>Store ufficiale MediaMC</p>
+<p>Acquista kit e prodotti per il tuo server!</p>
 </header>
 
-<!-- LOGIN -->
-<div id="login">
-  <div>
-    <h2>Nick Minecraft</h2>
-    <input id="nickInput" placeholder="Inserisci il tuo nick">
-    <button onclick="loginUser()">Entra</button>
+<div class="container">
+  <div class="shop" id="shop"></div>
+  <div class="cart">
+    <h3>Carrello</h3>
+    <div id="cartItems"></div>
+    <div id="total">Totale: €0</div>
   </div>
 </div>
 
-<section id="store" style="display:none">
+<div id="notification">Aggiunto al carrello con successo.</div>
 
-  <div class="category" onclick="toggleCategory('bedwars')">🛏️ BedWars</div>
-  <div class="products" id="bedwars">
-    <div class="product">
-      <div><img src="https://i.imgur.com/BedWarsIcon.png"><span>Cosmetici BedWars</span></div>
-      <button onclick="add('Cosmetici BedWars',3)">€3</button>
-    </div>
-    <div class="product">
-      <div><img src="https://i.imgur.com/BedWarsKit.png"><span>Kit BedWars</span></div>
-      <button onclick="add('Kit BedWars',5)">€5</button>
-    </div>
+<!-- MODAL IMMAGINE -->
+<div id="imageModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeImageModal()">&times;</span>
+    <img id="largeImage" src="">
   </div>
-
-  <div class="category" onclick="toggleCategory('duels')">⚔️ Duels</div>
-  <div class="products" id="duels">
-    <div class="product">
-      <div><img src="https://i.imgur.com/DuelsKit.png"><span>Kit Duels</span></div>
-      <button onclick="add('Kit Duels',5)">€5</button>
-    </div>
-  </div>
-
-  <div class="category" onclick="toggleCategory('survival')">🌍 Survival</div>
-  <div class="products" id="survival">
-    <div class="product">
-      <div><img src="https://i.imgur.com/SurvivalPremium.png"><span>Premium Survival</span></div>
-      <button onclick="add('Premium Survival',10)">€10</button>
-    </div>
-  </div>
-
-  <button style="margin-top:20px;background:#22c55e" onclick="openCart()">🛒 Apri Carrello</button>
-
-</section>
+</div>
 
 <script>
-let nick='';
-function loginUser(){
-  nick=document.getElementById("nickInput").value.trim();
-  if(!nick) return alert('Inserisci il nick');
-  localStorage.setItem('nick',nick);
-  localStorage.removeItem('cart'); // Carrello pulito
-  localStorage.removeItem('checkoutData'); // Reset checkout
-  document.getElementById("login").style.display='none';
-  document.getElementById("store").style.display='block';
+let cart=[];
+let categories=JSON.parse(localStorage.getItem('categories'))||[];
+let products=JSON.parse(localStorage.getItem('products'))||[];
+
+// MOSTRA PRODOTTI DINAMICI
+function renderShop(){
+  const shop=document.getElementById('shop');
+  shop.innerHTML='';
+  if(products.length===0) return shop.textContent='Nessun prodotto disponibile';
+  products.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='productCard';
+    div.innerHTML=`
+      <img src="${p.img}" onclick="openImageModal('${p.img}')">
+      <h4>${p.title}</h4>
+      <p>${p.desc}</p>
+      <p>Categoria: ${p.category}</p>
+      <p>€${p.price}</p>
+      <button onclick="addToCart(${products.indexOf(p)})">Aggiungi al carrello</button>
+    `;
+    shop.appendChild(div);
+  });
 }
 
-function toggleCategory(id){
-  const el=document.getElementById(id);
-  el.style.display=(el.style.display==='block')?'none':'block';
+// CARRELLO
+function addToCart(idx){
+  cart.push(products[idx]);
+  renderCart();
+  showNotification();
+}
+function renderCart(){
+  const cartDiv=document.getElementById('cartItems');
+  const totalDiv=document.getElementById('total');
+  cartDiv.innerHTML='';
+  let total=0;
+  cart.forEach((p,i)=>{
+    total+=p.price;
+    const div=document.createElement('div');
+    div.className='cartItem';
+    div.innerHTML=`<div>${p.title} (€${p.price})</div>
+                   <button onclick="removeFromCart(${i})">X</button>`;
+    cartDiv.appendChild(div);
+  });
+  totalDiv.textContent='Totale: €'+total;
+}
+function removeFromCart(i){
+  cart.splice(i,1);
+  renderCart();
 }
 
-function add(name,price){
-  let cart=JSON.parse(localStorage.getItem('cart'))||[];
-  cart.push({name,price});
-  localStorage.setItem('cart',JSON.stringify(cart));
-  alert(`${name} aggiunto al carrello con successo.`);
+// NOTIFICA
+function showNotification(){
+  const n=document.getElementById('notification');
+  n.style.display='block';
+  setTimeout(()=>{n.style.display='none'},1500);
 }
 
-function openCart(){window.location.href='cart.html'}
+// MODAL IMMAGINE
+function openImageModal(src){
+  document.getElementById('largeImage').src=src;
+  document.getElementById('imageModal').style.display='block';
+}
+function closeImageModal(){
+  document.getElementById('imageModal').style.display='none';
+}
+
+// INIT
+renderShop();
 </script>
 
 </body>
