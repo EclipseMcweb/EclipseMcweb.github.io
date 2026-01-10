@@ -2,35 +2,61 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Checkout</title>
+<title>MediaMC Checkout</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI';background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
-section{max-width:600px;margin:40px auto;background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:14px;padding:20px}
+body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;}
+header{text-align:center;padding:40px;background:rgba(2,6,23,.85);}
+section{max-width:700px;margin:40px auto;background:rgba(30,64,175,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8;}
+.productItem{background:rgba(2,6,23,.8);padding:10px;border-radius:6px;margin:5px 0;display:flex;justify-content:space-between;}
 </style>
 </head>
 <body>
 
+<header>
+<h1>💳 Checkout MediaMC</h1>
+<p>Completa il tuo ordine</p>
+</header>
+
 <section>
-<h2>💳 Checkout</h2>
-<p><b>Nick:</b> <span id="n"></span></p>
-<p><b>ID:</b> <span id="i"></span></p>
-<p><b>Totale:</b> €<span id="t"></span></p>
-<hr>
-<p><b>Intestatario:</b> MediaMC Network</p>
-<p><b>IBAN:</b> IT59E0200832974001869280392</p>
-<p><b>Causale:</b> ID Ordine</p>
-<p>Dopo il pagamento apri un ticket su Discord.</p>
+  <h2>Riepilogo Ordine</h2>
+  <p><strong>ID Ordine:</strong> <span id="oid"></span></p>
+  <p><strong>Nick:</strong> <span id="nick"></span></p>
+  <p><strong>Totale:</strong> €<span id="total">0</span></p>
+
+  <hr>
+  <h2>Bonifico Bancario</h2>
+  <p><strong>Intestatario:</strong> MediaMC Network</p>
+  <p><strong>IBAN:</strong> IT59E0200832974001869280392</p>
+  <p><strong>Causale:</strong> <span id="oid2"></span></p>
+  <p style="color:#a5f3fc;margin-top:15px">Effettua il bonifico e invia conferma allo staff tramite Discord per ricevere i prodotti.</p>
+</section>
+
+<section>
+  <h2>Prodotti Ordinati</h2>
+  <div id="items"></div>
 </section>
 
 <script>
-const d=JSON.parse(localStorage.getItem('checkout'));
-if(!d||d.cart.length===0){alert("Carrello vuoto");location.href='store.html'}
-document.getElementById('n').textContent=d.nick;
-document.getElementById('i').textContent=d.id;
-document.getElementById('t').textContent=d.total;
-let ord=JSON.parse(localStorage.getItem('orders'))||[];
-ord.push(d);localStorage.setItem('orders',JSON.stringify(ord));
+const data=JSON.parse(localStorage.getItem('checkoutData'))||{};
+document.getElementById('oid').textContent=data.id||'';
+document.getElementById('oid2').textContent=data.id||'';
+document.getElementById('nick').textContent=data.nick||'';
+document.getElementById('total').textContent=(data.total!==undefined)?data.total:'0';
+
+const itemsDiv=document.getElementById('items');
+itemsDiv.innerHTML='';
+if(data.cart&&data.cart.length>0){
+  data.cart.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='productItem';
+    div.innerHTML=`<span>${p.name}</span><span>€${p.price}</span>`;
+    itemsDiv.appendChild(div);
+  });
+}else{
+  itemsDiv.textContent='Nessun prodotto trovato';
+}
 </script>
+
 </body>
 </html>
