@@ -2,85 +2,192 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Carrello MediaMC</title>
+<title>MediaMC Carrello</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
-section{
-  max-width:500px;
-  margin:40px auto;
-  background:rgba(2,6,23,.85);
+body{
+  margin:0;
+  font-family:'Segoe UI',Arial;
+  background:radial-gradient(circle at top,#1e3a8a,#020617 70%);
+  color:#fff;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 25px;
+  background:linear-gradient(90deg,#020617,#0f172a);
+  border-bottom:2px solid #38bdf8;
+}
+
+.brand{font-size:1.4em;font-weight:bold;color:#38bdf8;}
+
+.userBox{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.userBadge{
+  background:#020617;
+  border:1px solid #38bdf8;
+  padding:6px 10px;
+  border-radius:8px;
+  color:#bae6fd;
+}
+
+.logout{
+  background:#0f172a;
+  border:1px solid #38bdf8;
+  color:#38bdf8;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.container{
+  max-width:800px;
+  margin:30px auto;
+  padding:20px;
+  background:rgba(2,6,23,0.85);
   border:2px solid #38bdf8;
   border-radius:12px;
-  padding:20px
 }
-.item{display:flex;justify-content:space-between;margin:6px 0}
-button{cursor:pointer}
+
+.cartItem{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #38bdf8;
+  padding:12px 0;
+}
+
+.cartItem b{color:#38bdf8;}
+.cartItem button{
+  background:#ef4444;
+  border:none;
+  color:#fff;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-left:10px;
+}
+
+.totalBox{
+  text-align:right;
+  margin-top:20px;
+  font-size:1.2em;
+}
+
+.proceedBtn{
+  margin-top:15px;
+  background:#38bdf8;
+  color:#020617;
+  border:none;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.backBtn{
+  margin-top:15px;
+  background:#0f172a;
+  border:1px solid #38bdf8;
+  color:#38bdf8;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
 </style>
 </head>
 <body>
 
-<section>
-<h2>🛒 Carrello</h2>
-<div id="list"></div>
-<p><b>Totale:</b> €<span id="tot">0</span></p>
+<header>
+  <div class="brand">MediaMC Carrello</div>
+  <div class="userBox">
+    <div class="userBadge" id="nickLabel"></div>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+</header>
 
-<h3>Giftcard</h3>
-<input id="gift">
-<button onclick="applyGift()">Applica</button>
-<p id="msg"></p>
+<div class="container">
+  <div id="cartList"></div>
+  <div class="totalBox" id="totalBox"></div>
 
-<button onclick="checkout()">Procedi ordine</button>
-<button onclick="location.href='store.html'">← Torna allo store</button>
-</section>
+  <button class="proceedBtn" onclick="checkout()">Procedi ordine</button>
+  <button class="backBtn" onclick="backToStore()">← Torna allo Store</button>
+</div>
 
 <script>
-const nick=sessionStorage.getItem('nick');
-if(!nick) location.href='store.html';
+let nick = sessionStorage.getItem('nick');
 
-let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
-let gift=0;
+if(!nick){
+  alert('Devi prima inserire il nick nello store');
+  location.href='store.html';
+}else{
+  document.getElementById('nickLabel').textContent = 'Player: '+nick;
+  loadCart();
+}
 
-function render(){
-  let t=0;
-  const l=document.getElementById('list');
-  l.innerHTML='';
-  cart.forEach((p,i)=>{
-    t+=p.price;
-    l.innerHTML+=`<div class="item">${p.name} €${p.price} <button onclick="rem(${i})">X</button></div>`;
+function logout(){
+  sessionStorage.removeItem('nick');
+  location.href='store.html';
+}
+
+function loadCart(){
+  let cart = JSON.parse(localStorage.getItem('cart_'+nick))||[];
+  const list = document.getElementById('cartList');
+  list.innerHTML='';
+  let total = 0;
+
+  if(cart.length===0){
+    list.innerHTML='<p>Il carrello è vuoto</p>';
+    document.getElementById('totalBox').textContent='';
+    return;
+  }
+
+  cart.forEach((p,idx)=>{
+    const div=document.createElement('div');
+    div.className='cartItem';
+    div.innerHTML=`<div><b>${p.name}</b> - €${p.price}</div>
+      <button onclick="removeItem(${idx})">Rimuovi</button>`;
+    list.appendChild(div);
+    total+=parseFloat(p.price);
   });
-  t=Math.max(0,t-gift);
-  document.getElementById('tot').textContent=t;
-}
-render();
 
-function rem(i){
-  cart.splice(i,1);
+  document.getElementById('totalBox').textContent='Totale: €'+total.toFixed(2);
+}
+
+function removeItem(idx){
+  let cart = JSON.parse(localStorage.getItem('cart_'+nick))||[];
+  cart.splice(idx,1);
   localStorage.setItem('cart_'+nick,JSON.stringify(cart));
-  render();
-}
-
-function applyGift(){
-  const code=document.getElementById('gift').value.trim();
-  const g=JSON.parse(localStorage.getItem('giftCards'))||[];
-  const f=g.find(x=>x.name===code && !x.used);
-  if(!f) return msg.textContent="Gift non valida";
-  f.used=true; gift=f.value;
-  localStorage.setItem('giftCards',JSON.stringify(g));
-  msg.textContent="Gift applicata";
-  render();
+  loadCart();
 }
 
 function checkout(){
-  if(cart.length===0) return alert("Carrello vuoto");
-  const id="MM-"+Math.floor(Math.random()*99999);
-  const tot=parseFloat(document.getElementById('tot').textContent);
-  const all=JSON.parse(localStorage.getItem('checkoutDataList'))||[];
-  all.push({id,nick,cart,total:tot});
-  localStorage.setItem('checkoutDataList',JSON.stringify(all));
-  localStorage.setItem('checkoutData',JSON.stringify({id,nick,cart,total:tot}));
-  location.href='checkout.html';
+  let cart = JSON.parse(localStorage.getItem('cart_'+nick))||[];
+  if(cart.length===0){ alert('Carrello vuoto!'); return; }
+
+  // Salva checkout e genera id ordine
+  const id = 'ORD'+Date.now();
+  let total = cart.reduce((sum,p)=>sum+parseFloat(p.price),0);
+  let checkoutData = JSON.parse(localStorage.getItem('checkoutDataList'))||[];
+  checkoutData.push({id:id,nick:nick,cart:cart,total:total});
+  localStorage.setItem('checkoutDataList',JSON.stringify(checkoutData));
+
+  // Svuota carrello
+  localStorage.removeItem('cart_'+nick);
+
+  alert(`Ordine creato! ID: ${id}\nTotale: €${total.toFixed(2)}`);
+  location.href='checkout.html?id='+id;
+}
+
+function backToStore(){
+  location.href='store.html';
 }
 </script>
+
 </body>
 </html>
