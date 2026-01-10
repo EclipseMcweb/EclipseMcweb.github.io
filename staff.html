@@ -3,55 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <title>Staff Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{font-family:Segoe UI;background:#020617;color:#fff}
-section{max-width:700px;margin:30px auto;background:#020617;border:2px solid #38bdf8;padding:15px;border-radius:10px}
-button{background:#38bdf8;border:none;border-radius:6px;padding:6px;color:#fff}
+body{margin:0;font-family:'Segoe UI';background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
+section{max-width:800px;margin:40px auto;background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:14px;padding:20px}
+input,select{margin:4px;padding:5px}
 </style>
 </head>
 <body>
 
 <section id="login">
-<h3>Login Staff</h3>
-<input id="pass" type="password">
+<h2>Login Staff</h2>
+<input id="pw" placeholder="Password">
 <button onclick="login()">Accedi</button>
 </section>
 
 <section id="panel" style="display:none">
-<h3>Categorie</h3>
-<input id="catName"><button onclick="addCat()">Aggiungi</button>
+<h2>📦 Staff Panel</h2>
 
-<h3>Prodotti</h3>
-<input id="pt"><input id="pp" type="number"><input id="pc">
+<h3>Crea Categoria</h3>
+<input id="cat"><button onclick="addCat()">Crea</button>
+
+<h3>Crea Prodotto</h3>
+<input id="pn" placeholder="Nome">
+<input id="pp" type="number" placeholder="Prezzo">
+<input id="pc" placeholder="Categoria">
 <button onclick="addProd()">Crea</button>
 
+<h3>Giftcard</h3>
+<input id="gc" placeholder="Codice">
+<input id="gv" type="number" placeholder="Valore">
+<button onclick="addGift()">Crea</button>
+
 <h3>Ordini</h3>
-<div id="orders"></div>
+<div id="ords"></div>
 </section>
 
 <script>
 function login(){
-  if(document.getElementById('pass').value==='staff123'){
-    login.style.display='none';
-    panel.style.display='block';
-    load();
-  }
-}
-function load(){
-  const o=JSON.parse(localStorage.getItem('orders'))||[];
-  orders.innerHTML=o.map(x=>`${x.id} - ${x.nick} €${x.total}`).join('<br>');
+ if(document.getElementById('pw').value!=='staff123')return alert("Password errata");
+ document.getElementById('login').style.display='none';
+ document.getElementById('panel').style.display='block';
+ load();
 }
 function addCat(){
-  const c=JSON.parse(localStorage.getItem('categories'))||[];
-  c.push({name:catName.value});
-  localStorage.setItem('categories',JSON.stringify(c));
-  alert('Categoria aggiunta');
+ let c=JSON.parse(localStorage.getItem('categories'))||[];
+ c.push(document.getElementById('cat').value);
+ localStorage.setItem('categories',JSON.stringify(c));
+ alert("Categoria creata");
 }
 function addProd(){
-  const p=JSON.parse(localStorage.getItem('products'))||[];
-  p.push({title:pt.value,price:+pp.value,category:pc.value});
-  localStorage.setItem('products',JSON.stringify(p));
-  alert('Prodotto creato');
+ let p=JSON.parse(localStorage.getItem('products'))||[];
+ p.push({name:pn.value,price:+pp.value,cat:pc.value});
+ localStorage.setItem('products',JSON.stringify(p));
+ alert("Prodotto creato");
+}
+function addGift(){
+ let g=JSON.parse(localStorage.getItem('giftCards'))||[];
+ g.push({code:gc.value,value:+gv.value,used:false});
+ localStorage.setItem('giftCards',JSON.stringify(g));
+ alert("Giftcard creata");
+}
+function load(){
+ const o=JSON.parse(localStorage.getItem('orders'))||[];
+ document.getElementById('ords').innerHTML=o.map(x=>`${x.id} - ${x.nick} - €${x.total}`).join('<br>');
 }
 </script>
 </body>
