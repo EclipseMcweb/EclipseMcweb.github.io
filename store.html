@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
   margin:0;
@@ -50,27 +49,35 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
+.green{background:#22c55e}
 #cartIcon{
   position:fixed;
   top:20px;
-  right:20px;
-  background:#facc15;
-  color:#000;
+  left:20px;
+  background:#3b82f6;
+  color:#fff;
   padding:10px 15px;
   border-radius:50px;
   font-weight:bold;
   cursor:pointer;
   z-index:100;
 }
-#cartIcon span{background:red;color:#fff;border-radius:50%;padding:2px 6px;margin-left:5px;font-size:0.8em}
+#cartIcon span{
+  background:red;
+  color:#fff;
+  border-radius:50%;
+  padding:2px 6px;
+  margin-left:5px;
+  font-size:0.8em
+}
 #cartPanel{
   position:fixed;
   top:60px;
-  right:20px;
+  left:20px;
   width:300px;
   max-height:80%;
   overflow:auto;
-  background:#020617dd;
+  background:#1e40af88;
   border:2px solid #38bdf8;
   border-radius:12px;
   padding:15px;
@@ -93,7 +100,18 @@ button{
   text-align:center;
 }
 input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
-.green{background:#22c55e}
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#38bdf8;
+  color:#fff;
+  padding:10px 20px;
+  border-radius:8px;
+  box-shadow:0 0 10px #000a;
+  z-index:500;
+}
 </style>
 </head>
 <body>
@@ -132,6 +150,10 @@ input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
     <div class="product">
       <div><img src="https://via.placeholder.com/60"><span>Cosmetici BedWars</span></div>
       <button onclick="add('Cosmetici BedWars',3)">€3</button>
+    </div>
+    <div class="product">
+      <div><img src="https://via.placeholder.com/60"><span>Kit BedWars</span></div>
+      <button onclick="add('Kit BedWars',5)">€5</button>
     </div>
   </div>
 
@@ -206,6 +228,7 @@ function toggleCategory(id){
 function add(name,price){
   cart.push({name,price});
   render();
+  showToast(`${name} aggiunto al carrello con successo.`);
 }
 
 function render(){
@@ -226,6 +249,15 @@ function render(){
 function toggleCart(){
   const panel=document.getElementById("cartPanel");
   panel.style.display=(panel.style.display==='block')?'none':'block';
+}
+
+// TOAST
+function showToast(msg){
+  let toast = document.createElement('div');
+  toast.className='toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(()=>{toast.remove()},2000);
 }
 
 // GIFT CARD
