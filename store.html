@@ -5,217 +5,272 @@
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{
-  margin:0;font-family:'Segoe UI',Arial;
-  background:linear-gradient(135deg,#0ea5e9,#020617);
-  color:#fff
+body {
+  margin:0;
+  font-family:'Segoe UI',Arial,sans-serif;
+  background: linear-gradient(135deg,#0b1c38,#020617);
+  color:#fff;
+  overflow-x:hidden;
 }
 header{
   display:flex;
-  justify-content:flex-start;
+  justify-content:space-between;
   align-items:center;
-  gap:10px;
-  padding:10px 20px;
-  background:rgba(2,6,23,.9)
+  padding:20px;
+  background: rgba(2,6,23,.85);
+  border-bottom: 2px solid #38bdf8;
 }
-#playerBox{
+#playerInfo{
   display:flex;
   align-items:center;
-  gap:8px;
-  padding:6px 10px;
-  border:1px solid #38bdf8;
-  border-radius:8px;
-  background:rgba(2,6,23,.7)
+  gap:10px;
 }
-#logout{
+#nickDisplay{
+  font-weight:bold;
+  font-size:1.1em;
+}
+#logoutBtn{
   background:#1e3a8a;
-  border:none;
   color:#fff;
-  padding:4px 8px;
+  border:none;
   border-radius:6px;
-  cursor:pointer
+  padding:4px 8px;
+  cursor:pointer;
+  font-weight:bold;
 }
 #cartBtn{
-  position:fixed;
-  top:15px;
-  right:20px;
+  position:relative;
   background:#38bdf8;
   border:none;
+  border-radius:6px;
+  color:#fff;
+  cursor:pointer;
+  padding:6px 10px;
+  font-weight:bold;
+}
+#cartCount{
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  background:red;
+  color:white;
+  font-size:0.7em;
+  font-weight:bold;
+  padding:2px 5px;
+  border-radius:50%;
+}
+.container{
+  max-width:1100px;
+  margin:20px auto;
+  padding:20px;
+}
+.categories{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+.catBtn{
   padding:8px 12px;
-  border-radius:8px;
-  cursor:pointer
+  border-radius:6px;
+  border:none;
+  background:#1e293b;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  position:relative;
 }
-.container{max-width:1100px;margin:auto;padding:30px}
-.box{
-  background:rgba(2,6,23,.8);
-  border:2px solid #38bdf8;
-  border-radius:12px;
-  padding:15px;
-  margin-bottom:20px
+.catBtn.active{
+  background:#2563eb;
 }
-.categories{display:flex;gap:12px;flex-wrap:wrap}
-.cat{
-  padding:8px 14px;
-  border:1px solid #38bdf8;
-  border-radius:8px;
-  cursor:pointer
+.catBtn::after{
+  content:"▼";
+  font-size:0.7em;
+  margin-left:5px;
 }
 .products{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px
+  gap:15px;
 }
 .product{
-  border:1px solid #38bdf8;
+  background: rgba(2,6,23,.8);
+  border:2px solid #38bdf8;
   border-radius:10px;
   padding:10px;
-  cursor:pointer
+  cursor:pointer;
+  transition:0.3s;
 }
+.product:hover{
+  box-shadow:0 0 20px rgba(56,189,248,.6);
+}
+button.addCart{
+  background:#38bdf8;
+  border:none;
+  color:#fff;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-top:5px;
+  font-weight:bold;
+}
+/* MODAL */
 .modalBg{
   display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
   justify-content:center;
   align-items:center;
-  z-index:999
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  z-index:999;
 }
-.modal{
+.modalContent{
   background:#020617;
-  border:2px solid #38bdf8;
+  padding:25px;
   border-radius:12px;
-  padding:20px;
+  border:2px solid #38bdf8;
   max-width:400px;
-  width:90%
+  width:90%;
+  text-align:center;
 }
-button{cursor:pointer}
+.modalContent h2{
+  margin-bottom:15px;
+}
+input[type=text]{
+  width:90%;
+  padding:6px;
+  border-radius:6px;
+  border:none;
+  margin-bottom:10px;
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div id="playerBox" style="display:none">
-    <span id="nickTxt"></span>
-    <button id="logout">Logout</button>
+  <div id="playerInfo">
+    <span id="nickDisplay"></span>
+    <button id="logoutBtn" onclick="logout()" style="display:none">Logout</button>
   </div>
+  <button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello <span id="cartCount">0</span></button>
 </header>
 
-<button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
-
-<div class="container" id="store" style="display:none">
-  <div class="box">
-    <h2>Categorie</h2>
-    <div class="categories" id="cats"></div>
-  </div>
-
-  <div class="box">
-    <h2>Prodotti</h2>
-    <div class="products" id="products"></div>
-  </div>
-
-  <div style="text-align:center;margin-top:40px">
-    <button onclick="location.href='staff.html'">⚙️ Pannello Staff</button>
-  </div>
+<div class="container">
+  <div class="categories" id="cats"></div>
+  <div class="products" id="products"></div>
 </div>
 
 <!-- MODAL NICK -->
 <div class="modalBg" id="nickModal">
-  <div class="modal">
-    <h2>Inserisci il tuo nick Minecraft</h2>
-    <input id="nickInput" placeholder="Nick Minecraft" style="width:100%;padding:8px">
-    <br><br>
-    <button onclick="enter()">Entra</button>
+  <div class="modalContent">
+    <h2>Inserisci il tuo Nick</h2>
+    <input type="text" id="nickInput" placeholder="Nick Minecraft">
+    <br>
+    <button onclick="enterStore()">Entra</button>
   </div>
 </div>
 
 <!-- MODAL PRODOTTO -->
-<div class="modalBg" id="prodModal">
-  <div class="modal">
-    <h2 id="mTitle"></h2>
-    <p id="mDesc"></p>
-    <p><b>Prezzo:</b> €<span id="mPrice"></span></p>
-    <button onclick="addToCart()">Aggiungi al carrello</button>
-    <button onclick="closeProd()">Chiudi</button>
-  </div>
+<div class="modalBg" id="productModal">
+  <div class="modalContent" id="productModalContent"></div>
 </div>
 
 <script>
-let nick=sessionStorage.getItem('nick');
-let currentProd=null;
+let nick = sessionStorage.getItem('nick') || '';
+let selectedCat = '';
 
-if(!nick){
-  document.getElementById('nickModal').style.display='flex';
-}else init();
-
-function enter(){
-  nick=document.getElementById('nickInput').value.trim();
-  if(!nick) return alert("Inserisci nick");
-  sessionStorage.setItem('nick',nick);
-  init();
-}
-
-function init(){
+function enterStore(){
+  const n = document.getElementById('nickInput').value.trim();
+  if(!n){ alert('Inserisci il nick'); return; }
+  nick = n;
+  sessionStorage.setItem('nick', nick);
   document.getElementById('nickModal').style.display='none';
-  document.getElementById('store').style.display='block';
-  document.getElementById('playerBox').style.display='flex';
-  document.getElementById('nickTxt').textContent=nick;
-  loadCats();
+  document.getElementById('nickDisplay').textContent = `Player: ${nick}`;
+  document.getElementById('logoutBtn').style.display='inline';
+  loadStore();
 }
 
-document.getElementById('logout').onclick=()=>{
-  sessionStorage.clear();
+function logout(){
+  sessionStorage.removeItem('nick');
   location.reload();
 }
 
-function loadCats(){
-  const cats=JSON.parse(localStorage.getItem('categories'))||[];
-  const c=document.getElementById('cats');
-  c.innerHTML='';
-  document.getElementById('products').innerHTML='';
-  cats.forEach(cat=>{
-    const d=document.createElement('div');
-    d.className='cat';
-    d.textContent=cat;
-    d.onclick=()=>show(cat);
-    c.appendChild(d);
+// Se già loggato mostra subito
+if(nick){ 
+  document.getElementById('nickModal').style.display='none';
+  document.getElementById('nickDisplay').textContent = `Player: ${nick}`;
+  document.getElementById('logoutBtn').style.display='inline';
+  loadStore();
+}else{
+  document.getElementById('nickModal').style.display='flex';
+}
+
+// --- STORE ---
+function loadStore(){
+  const cats = JSON.parse(localStorage.getItem('categories')) || ['Duels','BedWars','SkyWars','UHC'];
+  const prods = JSON.parse(localStorage.getItem('products')) || [];
+  
+  const catsDiv = document.getElementById('cats');
+  catsDiv.innerHTML='';
+  cats.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className='catBtn';
+    btn.textContent=c;
+    btn.onclick=()=>{ selectCategory(c,btn); };
+    catsDiv.appendChild(btn);
   });
 }
 
-function show(cat){
-  const prods=JSON.parse(localStorage.getItem('products'))||[];
-  const p=document.getElementById('products');
-  p.innerHTML='';
-  prods.filter(x=>x.category===cat).forEach(pr=>{
-    const d=document.createElement('div');
-    d.className='product';
-    d.innerHTML=`<b>${pr.name}</b><br>€${pr.price}`;
-    d.oncontextmenu=e=>{
-      e.preventDefault();
-      openProd(pr);
-    }
-    d.onclick=()=>openProd(pr);
-    p.appendChild(d);
+function selectCategory(cat,btn){
+  selectedCat = cat;
+  document.querySelectorAll('.catBtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  showProducts(cat);
+}
+
+function showProducts(cat){
+  const prods = JSON.parse(localStorage.getItem('products')) || [];
+  const pdiv = document.getElementById('products');
+  pdiv.innerHTML='';
+  prods.filter(p=>p.category===cat).forEach(p=>{
+    const div = document.createElement('div');
+    div.className='product';
+    div.innerHTML=`<b>${p.name}</b> - €${p.price}`;
+    div.onclick = ()=> showProductModal(p);
+    pdiv.appendChild(div);
   });
 }
 
-function openProd(p){
-  currentProd=p;
-  document.getElementById('mTitle').textContent=p.name;
-  document.getElementById('mDesc').textContent=p.desc||'';
-  document.getElementById('mPrice').textContent=p.price;
-  document.getElementById('prodModal').style.display='flex';
-}
-function closeProd(){
-  document.getElementById('prodModal').style.display='none';
+function showProductModal(p){
+  const modal = document.getElementById('productModal');
+  const content = document.getElementById('productModalContent');
+  content.innerHTML=`<h2>${p.name}</h2>
+    <p>${p.desc || 'Nessuna descrizione'}</p>
+    <p><strong>Prezzo: €${p.price}</strong></p>
+    <button class="addCart" onclick='addCart(${JSON.stringify(p)})'>Aggiungi al carrello</button>
+    <br><br><button onclick="closeModal('productModal')">Chiudi</button>`;
+  modal.style.display='flex';
 }
 
-function addToCart(){
-  let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
-  cart.push(currentProd);
-  localStorage.setItem('cart_'+nick,JSON.stringify(cart));
-  alert("Aggiunto al carrello");
-  closeProd();
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+
+function addCart(p){
+  let cart = JSON.parse(localStorage.getItem('cart_'+nick)) || [];
+  cart.push(p);
+  localStorage.setItem('cart_'+nick, JSON.stringify(cart));
+  alert('Aggiunto al carrello!');
+  updateCartCount();
+  closeModal('productModal');
 }
+
+function updateCartCount(){
+  const cart = JSON.parse(localStorage.getItem('cart_'+nick)) || [];
+  document.getElementById('cartCount').textContent = cart.length;
+}
+
+// Aggiorna contatore all'avvio
+updateCartCount();
 </script>
+
 </body>
 </html>
