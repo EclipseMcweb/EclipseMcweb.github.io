@@ -14,46 +14,88 @@ body{
 }
 header{
   text-align:center;
-  padding:60px 20px;
+  padding:40px 20px;
   background:rgba(2,6,23,.9);
+  position:relative;
 }
-section{
-  max-width:720px;
-  margin:25px auto;
-  background:rgba(2,6,23,.92);
+h1{margin:0;color:#fff}
+h2{color:#38bdf8;margin-top:0}
+section{padding:20px;box-sizing:border-box}
+.category{
+  background:#020617dd;
   border:2px solid #38bdf8;
-  border-radius:14px;
-  padding:20px;
+  border-radius:12px;
+  margin:15px auto;
+  max-width:95%;
+  cursor:pointer;
+  padding:10px;
 }
-h2{color:#38bdf8}
-.item{
+.products{display:none;margin-top:10px;}
+.product{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  padding:10px 0;
-  border-bottom:1px solid #38bdf8;
+  justify-content:space-between;
+  margin:10px 0;
+  background:rgba(2,6,23,.8);
+  border-radius:8px;
+  padding:10px;
 }
+.product img{width:60px;height:60px;border-radius:6px;margin-right:10px}
 button{
   background:#38bdf8;
   border:none;
   border-radius:6px;
-  padding:7px 14px;
+  padding:6px 12px;
   color:#fff;
   font-weight:bold;
   cursor:pointer;
 }
-.green{background:#22c55e}
-input{
-  padding:7px;
-  border-radius:6px;
-  border:none;
-  width:100%;
-  margin-bottom:10px;
+#cartIcon{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:#facc15;
+  color:#000;
+  padding:10px 15px;
+  border-radius:50px;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:100;
+}
+#cartIcon span{background:red;color:#fff;border-radius:50%;padding:2px 6px;margin-left:5px;font-size:0.8em}
+#cartPanel{
+  position:fixed;
+  top:60px;
+  right:20px;
+  width:300px;
+  max-height:80%;
+  overflow:auto;
+  background:#020617dd;
+  border:2px solid #38bdf8;
+  border-radius:12px;
+  padding:15px;
+  display:none;
+  z-index:99;
 }
 #payment{display:none}
+#login{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.7);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:200;
+}
+#login div{
+  background:#020617;
+  padding:25px;
+  border-radius:12px;
+  text-align:center;
+}
+input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
+.green{background:#22c55e}
 </style>
 </head>
-
 <body>
 
 <header>
@@ -62,47 +104,53 @@ input{
 </header>
 
 <!-- LOGIN -->
-<div id="login" style="position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;">
-  <div style="background:#020617;padding:25px;border-radius:12px;text-align:center;">
+<div id="login">
+  <div>
     <h2>Nick Minecraft</h2>
     <input id="nickInput" placeholder="Inserisci il tuo nick">
     <button onclick="loginUser()">Entra</button>
   </div>
 </div>
 
-<!-- STORE -->
+<!-- ICONA CARRELLO -->
+<div id="cartIcon" onclick="toggleCart()">🛒 Carrello <span id="cartCount">0</span></div>
+<div id="cartPanel">
+  <h3>Carrello</h3>
+  <div id="cartList"></div>
+  <h4>Totale: €<span id="total">0</span></h4>
+  <input id="giftInput" placeholder="Inserisci Gift Card">
+  <button onclick="applyGift()">Applica</button>
+  <p id="giftMsg"></p>
+  <button class="green" onclick="checkout()">Procedi Ordine</button>
+</div>
+
+<!-- STORE SEZIONI -->
 <section id="store" style="display:none">
-<h2>Prodotti</h2>
 
-<div class="item">
-  <span>⚔️ Kit Duels</span>
-  <button onclick="add('Kit Duels',5)">€5</button>
-</div>
+  <div class="category" onclick="toggleCategory('bedwars')">🛏️ BedWars</div>
+  <div class="products" id="bedwars">
+    <div class="product">
+      <div><img src="https://via.placeholder.com/60"><span>Cosmetici BedWars</span></div>
+      <button onclick="add('Cosmetici BedWars',3)">€3</button>
+    </div>
+  </div>
 
-<div class="item">
-  <span>🛏️ Cosmetici BedWars</span>
-  <button onclick="add('Cosmetici BedWars',3)">€3</button>
-</div>
+  <div class="category" onclick="toggleCategory('duels')">⚔️ Duels</div>
+  <div class="products" id="duels">
+    <div class="product">
+      <div><img src="https://via.placeholder.com/60"><span>Kit Duels</span></div>
+      <button onclick="add('Kit Duels',5)">€5</button>
+    </div>
+  </div>
 
-<div class="item">
-  <span>🌍 Premium Survival</span>
-  <button onclick="add('Premium Survival',10)">€10</button>
-</div>
-</section>
+  <div class="category" onclick="toggleCategory('survival')">🌍 Survival</div>
+  <div class="products" id="survival">
+    <div class="product">
+      <div><img src="https://via.placeholder.com/60"><span>Premium Survival</span></div>
+      <button onclick="add('Premium Survival',10)">€10</button>
+    </div>
+  </div>
 
-<!-- CARRELLO -->
-<section id="cart" style="display:none">
-<h2>Carrello</h2>
-<div id="cartList"></div>
-
-<h3>🎁 Gift Card</h3>
-<input id="giftInput" placeholder="Inserisci Gift Card">
-<button onclick="applyGift()">Applica</button>
-<p id="giftMsg"></p>
-
-<p><b>Totale:</b> €<span id="total">0</span></p>
-
-<button class="green" onclick="checkout()">Procedi Ordine</button>
 </section>
 
 <!-- PAGAMENTO -->
@@ -110,13 +158,10 @@ input{
 <h2>Pagamento – Bonifico Bancario</h2>
 <p><b>ID Ordine:</b> <span id="oid"></span></p>
 <p><b>Importo:</b> €<span id="payTotal"></span></p>
-
 <hr>
-
 <p><b>Intestatario:</b> MediaMC Network</p>
 <p><b>IBAN:</b> <span style="color:#facc15">INSERIREMO DOMANI</span></p>
 <p><b>Causale:</b> <span id="oid2"></span></p>
-
 <p style="color:#a5f3fc;margin-top:15px">
 Il pagamento verrà verificato manualmente.
 </p>
@@ -134,6 +179,7 @@ Il pagamento verrà verificato manualmente.
 </section>
 
 <script>
+// Variabili
 let nick='';
 let cart=[];
 let giftValue=0;
@@ -141,28 +187,31 @@ let giftCodeUsed='';
 let orders=JSON.parse(localStorage.getItem('orders'))||[];
 let giftCards=JSON.parse(localStorage.getItem('giftCards'))||{};
 
-// LOGIN FUNZIONANTE
+// LOGIN
 function loginUser(){
   const nickEl = document.getElementById("nickInput");
   nick = nickEl.value.trim();
   if(!nick) return alert('Inserisci il nick');
-
-  document.getElementById("login").style.display = "none";
-  document.getElementById("store").style.display = "block";
-  document.getElementById("cart").style.display = "block";
-  render(); // Aggiorna carrello subito
+  document.getElementById("login").style.display='none';
+  document.getElementById("store").style.display='block';
 }
 
-// AGGIUNGI AL CARRELLO
+// TOGGLE SEZIONI
+function toggleCategory(id){
+  const el=document.getElementById(id);
+  el.style.display = (el.style.display==='block')?'none':'block';
+}
+
+// CARRELLO
 function add(name,price){
   cart.push({name,price});
   render();
 }
 
-// RENDER CARRELLO
 function render(){
-  const cartList = document.getElementById("cartList");
-  const totalEl = document.getElementById("total");
+  const cartList=document.getElementById("cartList");
+  const totalEl=document.getElementById("total");
+  const count=document.getElementById("cartCount");
   cartList.innerHTML='';
   let tot=0;
   cart.forEach((i,idx)=>{
@@ -171,17 +220,22 @@ function render(){
   });
   tot=Math.max(0,tot-giftValue);
   totalEl.textContent=tot;
+  count.textContent=cart.length;
 }
 
-// APPLICA GIFT CARD
+function toggleCart(){
+  const panel=document.getElementById("cartPanel");
+  panel.style.display=(panel.style.display==='block')?'none':'block';
+}
+
+// GIFT CARD
 function applyGift(){
-  const code = document.getElementById("giftInput").value.trim().toUpperCase();
-  const giftMsg = document.getElementById("giftMsg");
+  const code=document.getElementById("giftInput").value.trim().toUpperCase();
+  const giftMsg=document.getElementById("giftMsg");
   if(!giftCards[code]) return giftMsg.textContent='Gift card non valida';
   if(giftCards[code].used) return giftMsg.textContent='Gift card già usata';
-
-  giftValue = giftCards[code].value;
-  giftCodeUsed = code;
+  giftValue=giftCards[code].value;
+  giftCodeUsed=code;
   giftMsg.textContent=`Gift card applicata: -€${giftValue}`;
   render();
 }
@@ -189,20 +243,15 @@ function applyGift(){
 // CHECKOUT
 function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
-
   let tot=cart.reduce((s,i)=>s+i.price,0);
   tot=Math.max(0,tot-giftValue);
-
   const id='MM-'+Math.floor(Math.random()*100000);
-
   orders.push({id,nick,items:cart,total:tot});
   localStorage.setItem('orders',JSON.stringify(orders));
-
   if(giftCodeUsed){
     giftCards[giftCodeUsed].used=true;
     localStorage.setItem('giftCards',JSON.stringify(giftCards));
   }
-
   document.getElementById("oid").textContent=id;
   document.getElementById("oid2").textContent=id;
   document.getElementById("payTotal").textContent=tot;
