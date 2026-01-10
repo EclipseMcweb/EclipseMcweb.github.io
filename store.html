@@ -47,7 +47,7 @@ h1{color:#38bdf8;margin:0}
   border-radius:10px;
   padding:10px;
 }
-.product-desc{display:none;margin-top:5px;font-size:0.9em;color:#bae6fd;}
+.product-desc{margin-top:5px;font-size:0.9em;color:#bae6fd;}
 
 button{
   background:#38bdf8;border:none;color:#fff;
@@ -157,17 +157,11 @@ function show(cat){
   prods.filter(p=>p.category===cat).forEach((p,idx)=>{
     const prodDiv=document.createElement('div');
     prodDiv.className='product';
-    prodDiv.innerHTML=`<b>${p.name} (€${p.price})</b><br>
+    prodDiv.innerHTML=`<b>${p.name} (€${p.price})</b>
       <div class="product-desc">${p.desc||''}</div>
-      <button onclick='add(${JSON.stringify(p)})'>Aggiungi</button>
-      <button onclick='toggleDesc(this)'>Mostra/Nascondi descrizione</button>`;
+      <button onclick='add(${JSON.stringify(p)})'>Aggiungi</button>`;
     pdiv.appendChild(prodDiv);
   });
-}
-
-function toggleDesc(btn){
-  const desc=btn.previousElementSibling;
-  desc.style.display = desc.style.display==='block'?'none':'block';
 }
 
 function add(p){
