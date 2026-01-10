@@ -2,72 +2,203 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Staff Panel</title>
+<title>MediaMC Staff Panel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI';background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
-section{max-width:800px;margin:40px auto;background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:14px;padding:20px}
-input,select{margin:4px;padding:5px}
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #0ea5e9, #020617);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+header {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(2,6,23,0.9);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+header h1 { color: #38bdf8; margin:0; font-size:2.5em; }
+header p { color: #bae6fd; margin:5px 0 0; }
+
+/* SEZIONI */
+section {
+  max-width: 900px;
+  margin: 30px auto;
+  background: rgba(2,6,23,0.8);
+  border: 2px solid #38bdf8;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* ORDINI */
+#searchOrder { width: 100%; padding:8px; border-radius:6px; border:none; margin-bottom:10px; }
+.orderItem {
+  background: rgba(0,10,30,0.7);
+  padding:10px;
+  margin:5px 0;
+  border-radius:6px;
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+}
+.orderDetails { flex:1; }
+button { cursor:pointer; padding:5px 10px; border:none; border-radius:6px; margin-left:5px; font-weight:bold; }
+button.delete { background:#ef4444; color:#fff; }
+button.view { background:#38bdf8; color:#fff; }
+
+/* MODAL */
+.modalBg {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.7);
+  z-index:999;
+  justify-content:center;
+  align-items:center;
+}
+.modalContent {
+  background: #020617;
+  padding:20px;
+  border-radius:10px;
+  max-width:400px;
+  width:90%;
+  border:2px solid #38bdf8;
+}
+.modalContent input, .modalContent textarea {
+  width:100%;
+  margin:5px 0;
+  padding:6px;
+  border-radius:6px;
+  border:none;
+}
+.modalContent button { margin-top:10px; width:100%; }
 </style>
 </head>
 <body>
 
-<section id="login">
-<h2>Login Staff</h2>
-<input id="pw" placeholder="Password">
-<button onclick="login()">Accedi</button>
+<header>
+  <h1>⚙️ Staff Panel MediaMC</h1>
+  <p>Gestione ordini, prodotti e giftcard</p>
+</header>
+
+<section>
+  <h2>🔍 Cerca ordine per ID</h2>
+  <input type="text" id="searchOrder" placeholder="Inserisci ID ordine">
+  <div id="orderResults"></div>
 </section>
 
-<section id="panel" style="display:none">
-<h2>📦 Staff Panel</h2>
-
-<h3>Crea Categoria</h3>
-<input id="cat"><button onclick="addCat()">Crea</button>
-
-<h3>Crea Prodotto</h3>
-<input id="pn" placeholder="Nome">
-<input id="pp" type="number" placeholder="Prezzo">
-<input id="pc" placeholder="Categoria">
-<button onclick="addProd()">Crea</button>
-
-<h3>Giftcard</h3>
-<input id="gc" placeholder="Codice">
-<input id="gv" type="number" placeholder="Valore">
-<button onclick="addGift()">Crea</button>
-
-<h3>Ordini</h3>
-<div id="ords"></div>
+<section>
+  <h2>📦 Tutti gli ordini</h2>
+  <div id="allOrders"></div>
 </section>
+
+<section>
+  <h2>📝 Modifica Prodotti (Descrizione)</h2>
+  <button onclick="openEditModal()">Apri Modifica Descrizione</button>
+</section>
+
+<!-- MODAL MODIFICA PRODOTTO -->
+<div class="modalBg" id="editModal">
+  <div class="modalContent">
+    <h3>Modifica Descrizione Prodotto</h3>
+    <label>Seleziona prodotto:</label>
+    <select id="editProductSelect"></select>
+    <label>Nuova descrizione:</label>
+    <textarea id="editProductDesc" rows="4"></textarea>
+    <button onclick="saveProductDesc()">Salva Descrizione</button>
+    <button onclick="closeModal()">Chiudi</button>
+  </div>
+</div>
 
 <script>
-function login(){
- if(document.getElementById('pw').value!=='staff123')return alert("Password errata");
- document.getElementById('login').style.display='none';
- document.getElementById('panel').style.display='block';
- load();
+// ORDINI
+let orders = JSON.parse(localStorage.getItem('checkoutDataList')) || []; // array di ordini salvati
+const allOrdersDiv = document.getElementById('allOrders');
+const orderResultsDiv = document.getElementById('orderResults');
+
+function renderOrders() {
+  allOrdersDiv.innerHTML = '';
+  orders.forEach((o,idx)=>{
+    const div = document.createElement('div');
+    div.className='orderItem';
+    div.innerHTML = `<div class="orderDetails">
+      <strong>ID:</strong> ${o.id} <br>
+      <strong>Nick:</strong> ${o.nick} <br>
+      <strong>Prodotti:</strong> ${o.cart.map(p=>p.name).join(', ')} <br>
+      <strong>Totale:</strong> €${o.total}
+    </div>
+    <button class="delete" onclick="deleteOrder(${idx})">Elimina</button>`;
+    allOrdersDiv.appendChild(div);
+  });
 }
-function addCat(){
- let c=JSON.parse(localStorage.getItem('categories'))||[];
- c.push(document.getElementById('cat').value);
- localStorage.setItem('categories',JSON.stringify(c));
- alert("Categoria creata");
+renderOrders();
+
+function deleteOrder(idx){
+  if(!confirm('Eliminare questo ordine?')) return;
+  orders.splice(idx,1);
+  localStorage.setItem('checkoutDataList',JSON.stringify(orders));
+  renderOrders();
 }
-function addProd(){
- let p=JSON.parse(localStorage.getItem('products'))||[];
- p.push({name:pn.value,price:+pp.value,cat:pc.value});
- localStorage.setItem('products',JSON.stringify(p));
- alert("Prodotto creato");
+
+// RICERCA ORDINE
+document.getElementById('searchOrder').addEventListener('input',function(){
+  const val = this.value.trim();
+  orderResultsDiv.innerHTML='';
+  if(!val) return;
+  const found = orders.filter(o=>o.id.includes(val));
+  if(found.length===0){ orderResultsDiv.textContent='Nessun ordine trovato'; return; }
+  found.forEach(o=>{
+    const div = document.createElement('div');
+    div.className='orderItem';
+    div.innerHTML = `<div class="orderDetails">
+      <strong>ID:</strong> ${o.id} <br>
+      <strong>Nick:</strong> ${o.nick} <br>
+      <strong>Prodotti:</strong> ${o.cart.map(p=>p.name).join(', ')} <br>
+      <strong>Totale:</strong> €${o.total}
+    </div>
+    <button class="delete" onclick="deleteSearchedOrder('${o.id}')">Elimina</button>`;
+    orderResultsDiv.appendChild(div);
+  });
+});
+
+function deleteSearchedOrder(id){
+  if(!confirm('Eliminare questo ordine?')) return;
+  orders = orders.filter(o=>o.id!==id);
+  localStorage.setItem('checkoutDataList',JSON.stringify(orders));
+  renderOrders();
+  orderResultsDiv.innerHTML='';
 }
-function addGift(){
- let g=JSON.parse(localStorage.getItem('giftCards'))||[];
- g.push({code:gc.value,value:+gv.value,used:false});
- localStorage.setItem('giftCards',JSON.stringify(g));
- alert("Giftcard creata");
+
+// MODAL MODIFICA DESCRIZIONE
+const editModal = document.getElementById('editModal');
+function openEditModal(){
+  editModal.style.display='flex';
+  const select = document.getElementById('editProductSelect');
+  select.innerHTML='';
+  const products = JSON.parse(localStorage.getItem('products'))||[];
+  products.forEach((p,idx)=>{
+    select.innerHTML+=`<option value="${idx}">${p.name}</option>`;
+  });
 }
-function load(){
- const o=JSON.parse(localStorage.getItem('orders'))||[];
- document.getElementById('ords').innerHTML=o.map(x=>`${x.id} - ${x.nick} - €${x.total}`).join('<br>');
+
+function closeModal(){
+  editModal.style.display='none';
+}
+
+function saveProductDesc(){
+  const products = JSON.parse(localStorage.getItem('products'))||[];
+  const idx = document.getElementById('editProductSelect').value;
+  const desc = document.getElementById('editProductDesc').value.trim();
+  products[idx].desc = desc;
+  localStorage.setItem('products',JSON.stringify(products));
+  alert('Descrizione aggiornata!');
+  closeModal();
 }
 </script>
+
 </body>
 </html>
