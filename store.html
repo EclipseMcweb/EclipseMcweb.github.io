@@ -59,17 +59,22 @@ function enterStore(){
   const n = document.getElementById('nickInput').value.trim();
   if(!n){ alert('Inserisci il nick'); return; }
   nick = n;
-  sessionStorage.setItem('nick', nick);
-  document.getElementById('nickModal').style.display='none';
-  document.getElementById('nickDisplay').textContent = `Player: ${nick}`;
-  document.getElementById('logoutBtn').style.display='inline';
-  loadStore();
+  sessionStorage.setItem('nick', nick); // rimane fino a chiusura browser
+  initStore();
 }
 function logout(){
   sessionStorage.removeItem('nick');
   location.reload();
 }
-if(nick){ enterStore(); } else { document.getElementById('nickModal').style.display='flex'; }
+function initStore(){
+  document.getElementById('nickModal').style.display='none';
+  document.getElementById('nickDisplay').textContent = `Player: ${nick}`;
+  document.getElementById('logoutBtn').style.display='inline';
+  loadStore();
+}
+
+// Se nick già presente in sessionStorage non chiedere modal
+if(nick){ initStore(); } else { document.getElementById('nickModal').style.display='flex'; }
 
 // --- Store ---
 function loadStore(){
