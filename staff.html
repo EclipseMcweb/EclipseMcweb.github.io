@@ -5,255 +5,202 @@
 <title>MediaMC Staff Panel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff;}
-header{text-align:center;padding:50px 20px;background:rgba(2,6,23,0.9);box-shadow:0 4px 15px rgba(0,0,0,0.4);}
-section{max-width:900px;margin:30px auto;background:rgba(30,64,175,0.9);padding:25px;border-radius:15px;border:2px solid #38bdf8;box-shadow:0 0 20px #38bdf8aa;}
-input, select, textarea{padding:8px;border-radius:8px;border:none;width:95%;margin-bottom:10px;}
-button{background:#38bdf8;border:none;border-radius:8px;padding:8px 15px;color:#fff;font-weight:bold;cursor:pointer;margin:5px 0;transition:.2s;}
-button:hover{transform:scale(1.05);}
-#content{display:none;margin-top:15px;padding:10px;border-radius:10px;}
-.orderItem, .giftItem, .categoryItem, .productItem{background:rgba(2,6,23,0.85);padding:10px;border-radius:8px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;}
-h3{margin-top:25px;color:#38bdf8;}
-img.productImg{width:50px;height:50px;border-radius:6px;cursor:pointer;object-fit:cover;}
-
-/* MODAL */
-.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;overflow:auto;background:rgba(0,0,0,0.6);}
-.modal-content{background:#1e40af;margin:10% auto;padding:20px;border-radius:15px;width:90%;max-width:400px;position:relative;box-shadow:0 0 25px #38bdf8aa;}
-.modal-content input, .modal-content select, .modal-content textarea{width:95%;margin-bottom:10px;padding:7px;border-radius:6px;border:none;}
-.close{position:absolute;top:10px;right:15px;color:#fff;font-size:22px;font-weight:bold;cursor:pointer;}
+body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff}
+header{text-align:center;padding:40px;background:rgba(2,6,23,.9)}
+section{max-width:900px;margin:30px auto;background:rgba(30,64,175,.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
+button{background:#38bdf8;border:none;border-radius:6px;padding:6px 12px;color:#fff;font-weight:bold;cursor:pointer;margin:5px 0}
+button.red{background:#ef4444}
+input,select{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center}
+.modalBox{background:#020617;padding:20px;border-radius:12px;border:2px solid #38bdf8;text-align:center}
+.hidden{display:none}
+.productItem{display:flex;justify-content:space-between;background:rgba(2,6,23,.8);padding:8px;border-radius:6px;margin:5px 0}
 </style>
 </head>
 <body>
 
+<div id="loginModal" class="modal">
+  <div class="modalBox">
+    <h2>🔒 Login Staff</h2>
+    <input id="passInput" type="password" placeholder="Inserisci password">
+    <br><br>
+    <button onclick="checkLogin()">Accedi</button>
+  </div>
+</div>
+
 <header>
-<h1>⚙️ Staff Panel MediaMC</h1>
-<p>Accesso riservato allo staff</p>
+<h1>⚙️ Pannello Staff MediaMC</h1>
 </header>
 
-<section id="loginSection">
-<h2>Login Staff</h2>
-<input type="password" id="staffPass" placeholder="Inserisci password">
-<button onclick="checkStaff()">Accedi</button>
-</section>
+<section id="staffPanel" class="hidden">
 
-<section id="content">
+<h2>Categorie</h2>
+<input id="catInput" placeholder="Nuova Categoria">
+<button onclick="addCategory()">Aggiungi Categoria</button>
+<div id="catList"></div>
 
-  <!-- ORDINI -->
-  <h3>Ricerca Ordine per ID</h3>
-  <input id="searchId" placeholder="Inserisci ID ordine">
-  <button onclick="searchOrder()">Cerca</button>
-  <div id="orderResult"></div>
+<h2>Prodotti</h2>
+<select id="catSelect"></select>
+<input id="prodName" placeholder="Nome Prodotto">
+<input id="prodPrice" type="number" placeholder="Prezzo">
+<input id="prodDesc" placeholder="Descrizione">
+<input id="prodImg" placeholder="URL Immagine">
+<button onclick="addProduct()">Crea Prodotto</button>
+<div id="prodList"></div>
 
-  <!-- CREA GIFT CARD -->
-  <h3>Crea Gift Card</h3>
-  <button onclick="openGiftModal()">Crea Nuova Gift Card</button>
-  <div id="giftList"></div>
+<h2>GiftCard</h2>
+<button onclick="openGiftModal()">Crea GiftCard</button>
+<div id="giftList"></div>
 
-  <!-- CATEGORIE -->
-  <h3>Categorie Shop</h3>
-  <input id="categoryName" placeholder="Nome categoria">
-  <button onclick="createCategory()">Crea Categoria</button>
-  <div id="categoryList"></div>
-
-  <!-- PRODOTTI -->
-  <h3>Prodotti</h3>
-  <button onclick="openProductModal()">Aggiungi Prodotto</button>
-  <div id="productList"></div>
+<h2>Ricerca Ordine</h2>
+<input id="orderSearch" placeholder="ID Ordine">
+<button onclick="searchOrder()">Cerca</button>
+<div id="orderResult"></div>
 
 </section>
 
-<!-- MODAL GIFT CARD -->
-<div id="giftModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeGiftModal()">&times;</span>
-    <h3>Crea Gift Card</h3>
-    <input type="text" id="giftName" placeholder="Nome Gift Card">
-    <input type="number" id="giftValueModal" placeholder="Valore €">
-    <button onclick="createGiftCardModal()">Crea</button>
-  </div>
-</div>
-
-<!-- MODAL PRODOTTO -->
-<div id="productModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeProductModal()">&times;</span>
-    <h3>Aggiungi Prodotto</h3>
-    <select id="productCategory">
-      <option value="">Scegli categoria</option>
-    </select>
-    <input type="text" id="productTitle" placeholder="Titolo prodotto">
-    <input type="number" id="productPrice" placeholder="Prezzo €">
-    <textarea id="productDesc" placeholder="Descrizione"></textarea>
-    <input type="text" id="productImg" placeholder="URL immagine">
-    <button onclick="createProduct()">Aggiungi</button>
-  </div>
-</div>
-
-<!-- MODAL IMMAGINE -->
-<div id="imageModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeImageModal()">&times;</span>
-    <img id="largeImage" src="" style="width:100%;border-radius:8px;">
+<div id="giftModal" class="modal hidden">
+  <div class="modalBox">
+    <h2>Crea GiftCard</h2>
+    <input id="giftCode" placeholder="Codice GiftCard">
+    <input id="giftValue" type="number" placeholder="Valore €">
+    <br>
+    <button onclick="createGift()">Crea</button>
+    <button onclick="closeGiftModal()">Chiudi</button>
   </div>
 </div>
 
 <script>
-// DATI
-let giftCards = JSON.parse(localStorage.getItem('giftCards'))||[];
-let categories = JSON.parse(localStorage.getItem('categories'))||[];
-let products = JSON.parse(localStorage.getItem('products'))||[];
-
-// LOGIN
-function checkStaff(){
-  const pass = document.getElementById('staffPass').value;
-  if(pass==='staff123'){
-    document.getElementById('loginSection').style.display='none';
-    document.getElementById('content').style.display='block';
-    alert('Accesso consentito');
-    renderGiftCards();
-    renderCategories();
-    renderProducts();
+// login
+function checkLogin(){
+  const p=document.getElementById('passInput').value;
+  if(p==='staff123'){
+    localStorage.setItem('staffLogged','true');
+    document.getElementById('loginModal').classList.add('hidden');
+    document.getElementById('staffPanel').classList.remove('hidden');
+    initStaff();
   } else alert('Password errata');
 }
 
-// --- GIFT CARD ---
-function openGiftModal(){document.getElementById('giftModal').style.display='block'}
-function closeGiftModal(){document.getElementById('giftModal').style.display='none'}
-function createGiftCardModal(){
-  const val=parseInt(document.getElementById('giftValueModal').value);
-  const name=document.getElementById('giftName').value.trim();
-  if(!val || val<=0) return alert('Valore non valido');
-  const code='GIFT'+Math.floor(Math.random()*100000);
-  giftCards.push({code,value:val,name:name,used:false});
-  localStorage.setItem('giftCards',JSON.stringify(giftCards));
-  renderGiftCards();
-  closeGiftModal();
-  document.getElementById('giftName').value='';
-  document.getElementById('giftValueModal').value='';
-  alert(`Gift Card ${code} creata!`);
-}
-function renderGiftCards(){
-  const list=document.getElementById('giftList');
-  list.innerHTML='';
-  if(giftCards.length===0) return list.textContent='Nessuna gift card';
-  giftCards.forEach((g,idx)=>{
-    list.innerHTML+=`<div class="giftItem">
-      <div>${g.code} - ${g.name?g.name+' - ':''}€${g.value} - ${g.used?'Usata':'Attiva'}</div>
-      <button onclick="deleteGift(${idx})" style="background:#ef4444;color:#fff;padding:5px 10px;border-radius:6px">Elimina</button>
-    </div>`;
-  });
-}
-function deleteGift(idx){
-  giftCards.splice(idx,1);
-  localStorage.setItem('giftCards',JSON.stringify(giftCards));
-  renderGiftCards();
+if(localStorage.getItem('staffLogged')==='true'){
+  document.getElementById('loginModal').classList.add('hidden');
+  document.getElementById('staffPanel').classList.remove('hidden');
+  initStaff();
 }
 
-// --- ORDINI ---
-function searchOrder(){
-  const id=document.getElementById('searchId').value.trim();
-  const data=JSON.parse(localStorage.getItem('checkoutData'));
-  const resDiv=document.getElementById('orderResult');
-  if(!data || data.id!==id){ resDiv.textContent='Ordine non trovato'; return; }
-  resDiv.innerHTML=`<div class="orderItem"><div>ID: ${data.id} | Nick: ${data.nick} | Totale: €${data.total}</div></div>`;
-  data.cart.forEach(p=>{
-    resDiv.innerHTML+=`<div class="orderItem" style="margin-left:20px">${p.name} - €${p.price}</div>`;
-  });
-  resDiv.innerHTML+=`<button style="margin-top:5px;background:#ef4444;color:#fff;padding:5px 10px;border-radius:6px" onclick="removeOrder()">Rimuovi ordine</button>`;
-}
-function removeOrder(){
-  localStorage.removeItem('checkoutData');
-  document.getElementById('orderResult').innerHTML='Ordine rimosso';
-  alert('Ordine eliminato');
-}
+// categories
+let categories=JSON.parse(localStorage.getItem('categories'))||['BedWars','Duels','Survival'];
+let products=JSON.parse(localStorage.getItem('products'))||[];
+let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
 
-// --- CATEGORIE ---
-function createCategory(){
-  const name=document.getElementById('categoryName').value.trim();
-  if(!name) return alert('Inserisci un nome categoria');
-  categories.push(name);
-  localStorage.setItem('categories',JSON.stringify(categories));
+function initStaff(){
   renderCategories();
-  document.getElementById('categoryName').value='';
+  renderProducts();
+  renderGiftCards();
 }
+
+// Categorie
+function addCategory(){
+  const c=document.getElementById('catInput').value.trim();
+  if(!c) return;
+  if(!categories.includes(c)) categories.push(c);
+  localStorage.setItem('categories',JSON.stringify(categories));
+  document.getElementById('catInput').value='';
+  renderCategories();
+  renderCatSelect();
+}
+
 function renderCategories(){
-  const list=document.getElementById('categoryList');
-  const sel=document.getElementById('productCategory');
-  list.innerHTML=''; sel.innerHTML='<option value="">Scegli categoria</option>';
-  if(categories.length===0) return list.textContent='Nessuna categoria';
-  categories.forEach((c,idx)=>{
-    list.innerHTML+=`<div class="categoryItem">${c}<button onclick="deleteCategory(${idx})" style="background:#ef4444;color:#fff;padding:5px 10px;border-radius:6px">Elimina</button></div>`;
-    sel.innerHTML+=`<option value="${c}">${c}</option>`;
+  const div=document.getElementById('catList');
+  div.innerHTML=categories.map(c=>`<div>${c}</div>`).join('');
+  renderCatSelect();
+}
+
+function renderCatSelect(){
+  const sel=document.getElementById('catSelect');
+  sel.innerHTML='';
+  categories.forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c;o.textContent=c;
+    sel.appendChild(o);
   });
 }
-function deleteCategory(idx){
-  const cat=categories[idx];
-  products=products.filter(p=>p.category!==cat);
-  categories.splice(idx,1);
-  localStorage.setItem('categories',JSON.stringify(categories));
+
+// Prodotti
+function addProduct(){
+  const cat=document.getElementById('catSelect').value;
+  const name=document.getElementById('prodName').value.trim();
+  const price=parseFloat(document.getElementById('prodPrice').value);
+  const desc=document.getElementById('prodDesc').value.trim();
+  const img=document.getElementById('prodImg').value.trim();
+  if(!name||isNaN(price)) return alert('Inserisci nome e prezzo');
+  products.push({category:cat,name,price,desc,img});
   localStorage.setItem('products',JSON.stringify(products));
-  renderCategories();
+  document.getElementById('prodName').value='';
+  document.getElementById('prodPrice').value='';
+  document.getElementById('prodDesc').value='';
+  document.getElementById('prodImg').value='';
   renderProducts();
 }
 
-// --- PRODOTTI ---
-function openProductModal(){document.getElementById('productModal').style.display='block'}
-function closeProductModal(){document.getElementById('productModal').style.display='none'}
-function createProduct(){
-  const cat=document.getElementById('productCategory').value;
-  const title=document.getElementById('productTitle').value.trim();
-  const price=parseFloat(document.getElementById('productPrice').value);
-  const desc=document.getElementById('productDesc').value.trim();
-  const img=document.getElementById('productImg').value.trim();
-  if(!cat || !title || !price || !desc) return alert('Compila tutti i campi');
-  products.push({category:cat,title:title,price:price,desc:desc,img:img});
-  localStorage.setItem('products',JSON.stringify(products));
-  renderProducts();
-  closeProductModal();
-  document.getElementById('productTitle').value='';
-  document.getElementById('productPrice').value='';
-  document.getElementById('productDesc').value='';
-  document.getElementById('productImg').value='';
-}
 function renderProducts(){
-  const list=document.getElementById('productList');
-  list.innerHTML='';
-  if(products.length===0) return list.textContent='Nessun prodotto';
+  const div=document.getElementById('prodList');
+  div.innerHTML='';
   products.forEach((p,idx)=>{
-    list.innerHTML+=`<div class="productItem">
-      <div>
-        <strong>${p.title}</strong> (€${p.price})<br>
-        ${p.desc}<br>
-        Categoria: ${p.category}
-      </div>
-      <div style="display:flex;align-items:center;">
-        ${p.img?`<img src="${p.img}" class="productImg" onclick="openImageModal('${p.img}')">`:""}
-        <button onclick="deleteProduct(${idx})" style="background:#ef4444;color:#fff;padding:5px 10px;border-radius:6px;margin-left:5px">Elimina</button>
-      </div>
-    </div>`;
+    const d=document.createElement('div');
+    d.className='productItem';
+    d.innerHTML=`${p.name} (${p.category}) €${p.price} <button class="red" onclick="removeProduct(${idx})">X</button>`;
+    div.appendChild(d);
   });
 }
-function deleteProduct(idx){
+
+function removeProduct(idx){
   products.splice(idx,1);
   localStorage.setItem('products',JSON.stringify(products));
   renderProducts();
 }
 
-// --- MODAL IMMAGINE ---
-function openImageModal(src){
-  document.getElementById('largeImage').src=src;
-  document.getElementById('imageModal').style.display='block';
-}
-function closeImageModal(){
-  document.getElementById('imageModal').style.display='none';
+// GiftCard
+function openGiftModal(){document.getElementById('giftModal').classList.remove('hidden')}
+function closeGiftModal(){document.getElementById('giftModal').classList.add('hidden')}
+function createGift(){
+  const code=document.getElementById('giftCode').value.trim().toUpperCase();
+  const value=parseFloat(document.getElementById('giftValue').value);
+  if(!code||isNaN(value)) return alert('Inserisci codice e valore');
+  giftCards.push({code,value,used:false});
+  localStorage.setItem('giftCards',JSON.stringify(giftCards));
+  document.getElementById('giftCode').value='';
+  document.getElementById('giftValue').value='';
+  renderGiftCards();
+  closeGiftModal();
 }
 
-// Chiudi modali cliccando fuori
-window.onclick=function(event){
-  ['giftModal','productModal','imageModal'].forEach(id=>{
-    const m=document.getElementById(id);
-    if(event.target===m) m.style.display='none';
+function renderGiftCards(){
+  const div=document.getElementById('giftList');
+  div.innerHTML='';
+  giftCards.forEach((g,idx)=>{
+    const d=document.createElement('div');
+    d.className='productItem';
+    d.innerHTML=`${g.code} €${g.value} - ${g.used?'Usata':'Attiva'} <button class="red" onclick="removeGift(${idx})">X</button>`;
+    div.appendChild(d);
   });
+}
+
+function removeGift(idx){
+  giftCards.splice(idx,1);
+  localStorage.setItem('giftCards',JSON.stringify(giftCards));
+  renderGiftCards();
+}
+
+// Ricerca ordini
+function searchOrder(){
+  const id=document.getElementById('orderSearch').value.trim();
+  const data=JSON.parse(localStorage.getItem('checkoutData'))||{};
+  const res=document.getElementById('orderResult');
+  if(data.id===id){
+    const items=data.cart.map(p=>`${p.name} €${p.price}`).join(', ');
+    res.innerHTML=`<p><strong>Nick:</strong> ${data.nick}<br><strong>Prodotti:</strong> ${items}<br><strong>Totale:</strong> €${data.total}</p>`;
+  } else res.textContent='Ordine non trovato';
 }
 </script>
 
