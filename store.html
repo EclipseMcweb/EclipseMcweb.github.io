@@ -6,48 +6,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #0ea5e9, #020617);
-  color: #fff;
-  overflow-x: hidden;
+  margin:0; font-family:'Segoe UI',Arial,sans-serif;
+  background: linear-gradient(135deg,#0ea5e9,#020617); color:#fff;
+  overflow-x:hidden;
 }
+
 /* Glow laterali */
 .side-glow {
-  position: fixed;
-  top: -50%;
-  width: 120px;
-  height: 200%;
-  background: linear-gradient(180deg, transparent, rgba(56,189,248,0.4), transparent);
-  filter: blur(45px);
-  animation: floatGlow 10s linear infinite;
-  pointer-events: none;
-  z-index: -1;
+  position: fixed; top: -50%; width: 120px; height: 200%;
+  background: linear-gradient(180deg,transparent,rgba(56,189,248,0.4),transparent);
+  filter: blur(45px); animation: floatGlow 10s linear infinite;
+  pointer-events:none; z-index:-1;
 }
-.side-glow.left { left: -50px; }
-.side-glow.right { right: -50px; animation-delay: 5s; }
-@keyframes floatGlow { 0% {transform:translateY(-20%);} 100% {transform:translateY(20%);} }
+.side-glow.left { left:-50px; }
+.side-glow.right { right:-50px; animation-delay:5s; }
+@keyframes floatGlow {0%{transform:translateY(-20%);}100%{transform:translateY(20%);}}
 
-/* HEADER */
-header { text-align:center; padding:70px 20px; background:rgba(2,6,23,0.85); box-shadow:0 10px 30px rgba(0,0,0,0.6); }
-header h1 { font-size:3em; color:#38bdf8; }
-header p { color:#bae6fd; font-size:1.2em; }
+/* Header */
+header {text-align:center;padding:40px 20px;background:rgba(2,6,23,0.85);box-shadow:0 10px 30px rgba(0,0,0,0.6);}
+header h1 {font-size:3em; color:#38bdf8;}
+header p {color:#bae6fd; font-size:1.2em; margin:0;}
 
-/* CATEGORIE */
-.categories { display:flex; justify-content:center; flex-wrap:wrap; gap:15px; margin:30px 0; }
-.categoryCard { background: rgba(2,6,23,0.8); border:2px solid #38bdf8; border-radius:12px; padding:12px 20px; cursor:pointer; transition:0.3s; min-width:120px; text-align:center; }
-.categoryCard:hover { transform:scale(1.05); box-shadow:0 0 25px rgba(56,189,248,0.6); }
+/* Store layout */
+#storeContent {padding:20px; display:none;}
+.categories {display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;}
+.categories button {background:#38bdf8; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; color:#fff; font-weight:bold;}
+.categories button:hover {background:#22d3ee;}
 
-/* PRODOTTI */
-.products { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
-.productCard { background: rgba(2,6,23,0.8); border:2px solid #38bdf8; border-radius:10px; width:200px; padding:10px; text-align:center; transition:0.2s; }
-.productCard img { max-width:100%; border-radius:6px; margin-bottom:6px; }
-.productCard:hover { transform:scale(1.03); box-shadow:0 0 20px rgba(56,189,248,0.6); }
-.productCard button { background:#38bdf8; border:none; border-radius:6px; padding:6px 10px; color:#fff; font-weight:bold; cursor:pointer; }
+.products {display:flex; flex-wrap:wrap; gap:12px;}
+.product {background:rgba(2,6,23,0.8); border:2px solid #38bdf8; border-radius:10px; padding:10px; width:180px; cursor:pointer;}
+.product img {max-width:100%; border-radius:6px;}
+.product h3 {margin:6px 0; font-size:1.1em;}
+.product p {margin:4px 0; font-size:0.9em;}
+.product span {font-weight:bold;}
 
-/* STAFF LOGIN */
-#staffBtn { display:block; margin:40px auto 50px auto; background:#facc15; color:#000; font-size:0.9em; padding:4px 8px; border:none; border-radius:6px; cursor:pointer; }
+/* Modal Nick */
+#nickModal {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center;
+  z-index:10;
+}
+#nickModal .modalContent {
+  background:rgba(2,6,23,0.9); padding:30px; border-radius:12px; text-align:center; width:90%; max-width:400px;
+}
+#nickModal input {width:80%; padding:8px; border-radius:6px; border:none; margin:10px 0;}
+#nickModal button {padding:8px 16px; border:none; border-radius:6px; background:#38bdf8; color:#fff; font-weight:bold; cursor:pointer;}
+#nickModal button:hover {background:#22d3ee;}
 
+/* Carrello button */
+#cartBtn {position:fixed; top:20px; right:20px; padding:10px 16px; background:#22d3ee; border:none; border-radius:8px; cursor:pointer; z-index:5;}
+#cartBtn:hover {background:#38bdf8;}
 </style>
 </head>
 <body>
@@ -55,70 +63,80 @@ header p { color:#bae6fd; font-size:1.2em; }
 <div class="side-glow right"></div>
 
 <header>
-  <h1>🛒 MediaMC Store</h1>
-  <p>Seleziona la categoria e aggiungi i prodotti al carrello</p>
+<h1>🛒 MediaMC Store</h1>
+<p>Scegli i prodotti per divertirti al massimo!</p>
 </header>
 
-<div class="categories" id="categoryContainer"></div>
-<div class="products" id="productContainer"></div>
+<!-- Modal nick -->
+<div id="nickModal">
+  <div class="modalContent">
+    <h2>Inserisci il tuo nick Minecraft</h2>
+    <input type="text" id="nickInput" placeholder="Nick Minecraft">
+    <br>
+    <button onclick="enterStore()">Entra nello Store</button>
+  </div>
+</div>
 
-<button id="staffBtn" onclick="openStaff()">⚙️ Staff Login</button>
+<button id="cartBtn" onclick="goCart()">🛒 Carrello</button>
+
+<div id="storeContent">
+  <div class="categories" id="categories"></div>
+  <div class="products" id="products"></div>
+</div>
 
 <script>
+// Variabili
 let nick = '';
-function askNick() {
-  nick = prompt("Inserisci il tuo Nick Minecraft");
-  if(!nick || nick.trim()==='') { alert('Devi inserire un nick valido!'); askNick(); }
-}
-window.onload = askNick;
-
-// Default categorie
 let categories = JSON.parse(localStorage.getItem('categories')) || ['Duels','BedWars'];
-let products = JSON.parse(localStorage.getItem('products')) || [
-  {title:'Duels Kit 1', category:'Duels', price:5, desc:'Kit base Duels', image:''},
-  {title:'BedWars Kit 1', category:'BedWars', price:8, desc:'Kit base BedWars', image:''}
-];
+let products = JSON.parse(localStorage.getItem('products')) || [];
+
+// Modal nick
+function enterStore(){
+  const val=document.getElementById('nickInput').value.trim();
+  if(!val){ alert('Inserisci il nick!'); return; }
+  nick = val;
+  localStorage.setItem('nickTemp',nick);
+  document.getElementById('nickModal').style.display='none';
+  document.getElementById('storeContent').style.display='block';
+  renderCategories();
+}
+
+// Carrello
+function goCart(){ window.location.href='carrello.html'; }
 
 // Render categorie
-function renderCategories() {
-  const catDiv = document.getElementById('categoryContainer');
-  catDiv.innerHTML = '';
+function renderCategories(){
+  const catDiv = document.getElementById('categories');
+  catDiv.innerHTML='';
   categories.forEach(c=>{
-    const div = document.createElement('div');
-    div.className = 'categoryCard';
-    div.textContent = c;
-    div.onclick = ()=>renderProducts(c);
-    catDiv.appendChild(div);
+    const btn=document.createElement('button');
+    btn.textContent=c;
+    btn.onclick=()=>renderProducts(c);
+    catDiv.appendChild(btn);
   });
 }
-renderCategories();
 
 // Render prodotti per categoria
 function renderProducts(cat){
-  const prodDiv = document.getElementById('productContainer');
-  prodDiv.innerHTML = '';
-  const filtered = products.filter(p=>p.category===cat);
-  filtered.forEach(p=>{
-    const card = document.createElement('div');
-    card.className='productCard';
-    let imgTag = p.image?`<img src="${p.image}">`:'';
-    card.innerHTML=`${imgTag}<h3>${p.title}</h3><p>€${p.price}</p><p>${p.desc}</p><button onclick="addCart('${p.title}',${p.price})">Aggiungi al Carrello</button>`;
-    prodDiv.appendChild(card);
+  const prodDiv = document.getElementById('products');
+  prodDiv.innerHTML='';
+  products.filter(p=>p.category===cat).forEach(p=>{
+    const div=document.createElement('div');
+    div.className='product';
+    div.innerHTML=`${p.image?`<img src="${p.image}">`:''}<h3>${p.title}</h3><p>${p.desc}</p><span>€${p.price}</span><br><button onclick="addCart(${products.indexOf(p)})">Aggiungi al carrello</button>`;
+    prodDiv.appendChild(div);
   });
 }
 
-// Carrello in localStorage
-function addCart(title,price){
+// Aggiungi al carrello
+function addCart(idx){
   let cart = JSON.parse(localStorage.getItem('cart'))||[];
-  cart.push({title,price});
+  cart.push(products[idx]);
   localStorage.setItem('cart',JSON.stringify(cart));
-  alert(`${title} aggiunto al carrello!`);
+  alert('Aggiunto al carrello con successo.');
 }
 
-// Apri staff
-function openStaff(){
-  window.location.href='staff.html';
-}
+// Salva categorie e prodotti dallo staff
 </script>
 </body>
 </html>
