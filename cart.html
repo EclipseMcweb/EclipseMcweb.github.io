@@ -5,10 +5,10 @@
 <title>Carrello</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:Segoe UI;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
-section{max-width:500px;margin:40px auto;background:rgba(2,6,23,.8);padding:20px;border-radius:12px;border:2px solid #38bdf8}
-.item{display:flex;justify-content:space-between;margin:5px 0}
-button{background:#38bdf8;border:none;border-radius:6px;padding:6px;color:#fff}
+body{margin:0;font-family:'Segoe UI';background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
+section{max-width:600px;margin:40px auto;background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:14px;padding:20px}
+.product{display:flex;justify-content:space-between;margin:6px 0}
+button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px}
 </style>
 </head>
 <body>
@@ -16,42 +16,43 @@ button{background:#38bdf8;border:none;border-radius:6px;padding:6px;color:#fff}
 <section>
 <h2>🛒 Carrello</h2>
 <div id="list"></div>
-<p>Totale: €<span id="total">0</span></p>
-<button onclick="checkout()">Procedi Ordine</button>
+<p><b>Totale:</b> €<span id="tot">0</span></p>
+
+<h3>Giftcard</h3>
+<input id="gift" placeholder="Codice gift">
+<button onclick="gift()">Applica</button>
+
+<br><br>
+<button onclick="go()">Procedi ordine</button>
 <button onclick="location.href='store.html'">← Torna allo store</button>
 </section>
 
 <script>
-const nick=localStorage.getItem('nick');
-if(!nick){location.href='store.html';}
+const nick=sessionStorage.getItem('nick');
+if(!nick){location.href='store.html'}
+let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
+let giftV=0;
 
-const key='cart_'+nick;
-let cart=JSON.parse(localStorage.getItem(key))||[];
+function render(){
+ let t=0,l=document.getElementById('list');l.innerHTML='';
+ cart.forEach(p=>{t+=p.price;l.innerHTML+=`<div class="product"><span>${p.name}</span><span>€${p.price}</span></div>`});
+ t=Math.max(0,t-giftV);
+ document.getElementById('tot').textContent=t;
+}
+render();
 
-const list=document.getElementById('list');
-let total=0;
-cart.forEach((p,i)=>{
-  total+=p.price;
-  list.innerHTML+=`<div class="item">${p.name} €${p.price}
-  <button onclick="remove(${i})">X</button></div>`;
-});
-document.getElementById('total').textContent=total;
-
-function remove(i){
-  cart.splice(i,1);
-  localStorage.setItem(key,JSON.stringify(cart));
-  location.reload();
+function gift(){
+ const g=(JSON.parse(localStorage.getItem('giftCards'))||[]).find(x=>x.code===document.getElementById('gift').value);
+ if(!g||g.used){alert("Gift non valida");return;}
+ g.used=true;giftV=g.value;
+ localStorage.setItem('giftCards',JSON.stringify(JSON.parse(localStorage.getItem('giftCards'))));
+ render();
 }
 
-function checkout(){
-  const id='MM-'+Math.floor(Math.random()*100000);
-  const order={id,nick,cart,total};
-  const orders=JSON.parse(localStorage.getItem('orders'))||[];
-  orders.push(order);
-  localStorage.setItem('orders',JSON.stringify(orders));
-  localStorage.setItem('checkout',JSON.stringify(order));
-  localStorage.removeItem(key);
-  location.href='checkout.html';
+function go(){
+ if(cart.length===0){alert("Carrello vuoto");return;}
+ localStorage.setItem('checkout',JSON.stringify({nick,cart,total:document.getElementById('tot').textContent,id:'MM-'+Date.now()}));
+ location.href='checkout.html';
 }
 </script>
 </body>
