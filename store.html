@@ -4,33 +4,153 @@
 <meta charset="UTF-8">
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;overflow-x:hidden}
-header{padding:15px 20px;background:rgba(2,6,23,.85);display:flex;justify-content:space-between;align-items:center}
-#nickDisplay{font-weight:bold;font-size:0.9em;background:rgba(56,189,248,0.2);padding:5px 10px;border-radius:6px;}
-#logoutBtn{background:#1e3a8a;color:#fff;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;font-weight:bold;font-size:0.8em;}
-.container{max-width:1100px;margin:20px auto;padding:20px}
-.box{background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:12px;padding:15px;margin:15px 0;transition:.3s;cursor:pointer}
-.box:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
-.categories{display:flex;gap:15px;flex-wrap:wrap}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.product{border:1px solid #38bdf8;border-radius:10px;padding:10px;position:relative}
-button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:5px}
-#cartBtn{position:fixed;top:20px;right:20px;z-index:10}
 
-/* MODAL NICK */
-.modalBg{display:flex;justify-content:center;align-items:center;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999}
-.modalContent{background:#020617;padding:30px;border-radius:12px;border:2px solid #38bdf8;width:90%;max-width:400px;text-align:center}
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI',Arial;
+  background:linear-gradient(135deg,#0ea5e9,#020617);
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* HEADER */
+header{
+  padding:15px 20px;
+  background:rgba(2,6,23,.9);
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  gap:12px;
+}
+
+/* PLAYER BOX */
+#playerBox{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(2,6,23,.8);
+  border:2px solid #38bdf8;
+  padding:6px 12px;
+  border-radius:10px;
+  font-size:.9em;
+}
+
+#logoutBtn{
+  background:#1e3a8a;
+  border:none;
+  color:#fff;
+  padding:4px 8px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* STORE */
+.container{
+  max-width:1100px;
+  margin:25px auto;
+  padding:20px;
+}
+
+.box{
+  background:rgba(2,6,23,.85);
+  border:2px solid #38bdf8;
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:20px;
+}
+
+.categories{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.category{
+  cursor:pointer;
+  padding:10px 15px;
+  border:1px solid #38bdf8;
+  border-radius:8px;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+
+.product{
+  border:1px solid #38bdf8;
+  border-radius:10px;
+  padding:12px;
+  cursor:context-menu;
+}
+
+#cartBtn{
+  position:fixed;
+  top:18px;
+  right:18px;
+  background:#38bdf8;
+  border:none;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:50px;
+  cursor:pointer;
+}
+
+/* MODAL */
+.modalBg{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+.modalContent{
+  background:#020617;
+  border:2px solid #38bdf8;
+  border-radius:14px;
+  padding:25px;
+  width:90%;
+  max-width:420px;
+}
+
+.modalContent button{
+  background:#38bdf8;
+  border:none;
+  color:#fff;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* NICK MODAL */
+#nickModal input{
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  margin-top:10px;
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<div id="nickDisplay" style="display:none"></div>
-<button id="logoutBtn" onclick="logout()" style="display:none">Logout</button>
+  <div id="playerBox" style="display:none">
+    <span id="nickDisplay"></span>
+    <button id="logoutBtn" onclick="logout()">Logout</button>
+  </div>
 </header>
 
+<button id="cartBtn" onclick="location.href='cart.html'">🛒</button>
+
 <div class="container">
+
   <div class="box">
     <h2>Categorie</h2>
     <div class="categories" id="cats"></div>
@@ -40,89 +160,115 @@ button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:
     <h2>Prodotti</h2>
     <div class="products" id="products"></div>
   </div>
-</div>
 
-<button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
-<div style="text-align:center;margin-top:20px;">
-<button onclick="openStaff()" id="staffBtn" style="padding:6px 12px;border-radius:6px;background:#38bdf8;border:none;color:#fff;">⚙️ Pannello Staff</button>
 </div>
 
 <!-- MODAL NICK -->
 <div class="modalBg" id="nickModal">
   <div class="modalContent">
     <h2>Inserisci il tuo Nick</h2>
-    <input type="text" id="nickInput" placeholder="Nick Minecraft">
+    <input id="nickInput" placeholder="Nick Minecraft">
     <br><br>
     <button onclick="enterStore()">Entra</button>
   </div>
 </div>
 
+<!-- MODAL PRODOTTO -->
+<div class="modalBg" id="productModal">
+  <div class="modalContent">
+    <h2 id="modalTitle"></h2>
+    <p id="modalDesc"></p>
+    <p><b id="modalPrice"></b></p>
+    <div style="display:flex;justify-content:flex-end">
+      <button onclick="addFromModal()">Aggiungi al carrello</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// --- Gestione nick ---
-let nick = sessionStorage.getItem('nick') || '';
+let nick = sessionStorage.getItem('nick');
+let selectedProduct = null;
+
+/* LOGIN */
 function enterStore(){
-  const n = document.getElementById('nickInput').value.trim();
-  if(!n){ alert('Inserisci il nick'); return; }
-  nick = n;
-  sessionStorage.setItem('nick', nick);
-  initStore();
+  const n=document.getElementById('nickInput').value.trim();
+  if(!n) return alert('Inserisci il nick');
+  nick=n;
+  sessionStorage.setItem('nick',nick);
+  init();
 }
+
 function logout(){
   sessionStorage.removeItem('nick');
   location.reload();
 }
-function initStore(){
+
+function init(){
   document.getElementById('nickModal').style.display='none';
-  document.getElementById('nickDisplay').style.display='inline';
-  document.getElementById('nickDisplay').textContent = `Player: ${nick}`;
-  document.getElementById('logoutBtn').style.display='inline';
+  document.getElementById('playerBox').style.display='flex';
+  document.getElementById('nickDisplay').textContent='Player: '+nick;
   loadStore();
 }
 
-// --- Staff ---
-function openStaff(){
-  window.location.href='staff.html';
-}
+if(nick) init();
+else document.getElementById('nickModal').style.display='flex';
 
-// Se nick già presente in sessionStorage non chiedere modal
-if(nick){ initStore(); }
-
-// --- Store ---
+/* STORE */
 function loadStore(){
-  const cats = JSON.parse(localStorage.getItem('categories')) || ['Duels','Bedwars'];
-  const prods = JSON.parse(localStorage.getItem('products')) || [];
-  
-  const catsDiv = document.getElementById('cats');
-  catsDiv.innerHTML='';
+  const cats=JSON.parse(localStorage.getItem('categories'))||['Duels','Bedwars'];
+  const prods=JSON.parse(localStorage.getItem('products'))||[];
+
+  const cdiv=document.getElementById('cats');
+  cdiv.innerHTML='';
   cats.forEach(c=>{
-    const div = document.createElement('div');
-    div.className='box';
-    div.textContent=c;
-    div.onclick=()=>showProducts(c);
-    catsDiv.appendChild(div);
+    const d=document.createElement('div');
+    d.className='category';
+    d.textContent=c;
+    d.onclick=()=>showProducts(c);
+    cdiv.appendChild(d);
   });
-  showProducts(cats[0]);
+
+  document.getElementById('products').innerHTML='';
 }
 
 function showProducts(cat){
-  const prods = JSON.parse(localStorage.getItem('products')) || [];
-  const pdiv = document.getElementById('products');
+  const prods=JSON.parse(localStorage.getItem('products'))||[];
+  const pdiv=document.getElementById('products');
   pdiv.innerHTML='';
+
   prods.filter(p=>p.category===cat).forEach(p=>{
-    const div = document.createElement('div');
-    div.className='product';
-    div.innerHTML=`<b>${p.name}</b> - €${p.price}<br><small>${p.desc||''}</small><br><button onclick='addCart(${JSON.stringify(p)})'>Aggiungi</button>`;
-    pdiv.appendChild(div);
+    const d=document.createElement('div');
+    d.className='product';
+    d.innerHTML=`<b>${p.name}</b> - €${p.price}`;
+    d.oncontextmenu=e=>{
+      e.preventDefault();
+      openProductModal(p);
+    };
+    pdiv.appendChild(d);
   });
 }
 
-// --- Carrello ---
-function addCart(p){
-  let cart = JSON.parse(localStorage.getItem('cart_'+nick)) || [];
-  cart.push(p);
-  localStorage.setItem('cart_'+nick, JSON.stringify(cart));
-  alert('Aggiunto al carrello!');
+/* MODAL PRODOTTO */
+function openProductModal(p){
+  selectedProduct=p;
+  document.getElementById('modalTitle').textContent=p.name;
+  document.getElementById('modalDesc').textContent=p.desc||'Nessuna descrizione';
+  document.getElementById('modalPrice').textContent='Prezzo: €'+p.price;
+  document.getElementById('productModal').style.display='flex';
 }
+
+function addFromModal(){
+  let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
+  cart.push(selectedProduct);
+  localStorage.setItem('cart_'+nick,JSON.stringify(cart));
+  document.getElementById('productModal').style.display='none';
+  alert('Aggiunto al carrello');
+}
+
+document.getElementById('productModal').onclick=e=>{
+  if(e.target.id==='productModal')
+    e.target.style.display='none';
+};
 </script>
 
 </body>
