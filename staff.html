@@ -74,6 +74,11 @@ button.green{background:#22c55e;color:#fff;}
     <input id="prodPrice" placeholder="Prezzo" type="number">
     <textarea id="prodDesc" placeholder="Descrizione"></textarea>
     <input id="prodImg" placeholder="URL immagine (opzionale)">
+    <select id="prodSize">
+      <option value="piccola">Piccola</option>
+      <option value="media">Media</option>
+      <option value="grande">Grande</option>
+    </select>
     <button onclick="createProduct()">Crea</button>
     <button onclick="closeModal('productModal')">Chiudi</button>
   </div>
@@ -176,7 +181,8 @@ function renderProducts(){
   products.forEach((p,idx)=>{
     const item=document.createElement('div');
     item.className='productItem';
-    item.innerHTML=`<div><strong>${p.name}</strong> (${p.category}) - €${p.price}<br>${p.desc||''}</div>
+    item.style.width = p.size==='grande'?'100%':p.size==='media'?'50%':'25%';
+    item.innerHTML=`<div><strong>${p.name}</strong> (${p.category}) - €${p.price}<br><span class="prodDesc">${p.desc||''}</span></div>
       <button class="delete" onclick="deleteProduct(${idx})">Elimina</button>`;
     div.appendChild(item);
   });
@@ -193,7 +199,10 @@ function createProduct(){
   const price=parseFloat(document.getElementById('prodPrice').value);
   const desc=document.getElementById('prodDesc').value.trim();
   const img=document.getElementById('prodImg').value.trim();
-  if(!name||!category||isNaN(price)) return alert('Controlla dati'); products.push({name,category,price,desc,img}); localStorage.setItem('products',JSON.stringify(products)); renderProducts(); closeModal('productModal');
+  const size=document.getElementById('prodSize').value;
+  if(!name||!category||isNaN(price)) return alert('Controlla dati'); 
+  products.push({name,category,price,desc,img,size}); 
+  localStorage.setItem('products',JSON.stringify(products)); renderProducts(); closeModal('productModal');
 }
 function deleteProduct(idx){ if(!confirm('Eliminare prodotto?')) return; products.splice(idx,1); localStorage.setItem('products',JSON.stringify(products)); renderProducts(); }
 
