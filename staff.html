@@ -6,33 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{
-  margin:0;
-  font-family:'Segoe UI',Arial,sans-serif;
+  margin:0;font-family:'Segoe UI',Arial,sans-serif;
   background: linear-gradient(135deg,#0ea5e9,#020617);
   color:#fff;
   overflow-x:hidden;
 }
-/* GLOW LATERALI */
 .side-glow{position:fixed;top:-50%;width:120px;height:200%;background:linear-gradient(180deg,transparent,rgba(56,189,248,0.4),transparent);filter:blur(45px);animation:floatGlow 10s linear infinite;pointer-events:none;z-index:-1}
 .side-glow.left{left:-50px}
 .side-glow.right{right:-50px;animation-delay:5s}
 @keyframes floatGlow{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
+header{text-align:center;padding:50px 20px;background:rgba(2,6,23,0.9);box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+header h1{color:#38bdf8;font-size:3em;margin:0}
+header p{color:#bae6fd;font-size:1.2em;margin:5px 0}
 
-header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.85);box-shadow:0 10px 30px rgba(0,0,0,0.6)}
-header h1{color:#38bdf8;margin:0 0 10px;font-size:2.5em}
-header p{color:#bae6fd;font-size:1.1em}
-
-.section{max-width:900px;margin:20px auto;background:rgba(2,6,23,.8);padding:15px;border-radius:12px;border:2px solid #38bdf8}
-.section h2{margin:0 0 10px;color:#38bdf8}
-input,select{padding:6px;border-radius:6px;border:none;margin:5px 0;width:95%}
-button{padding:6px 12px;border:none;border-radius:6px;margin:5px;cursor:pointer;font-weight:bold}
-button.create{background:#22c55e;color:#fff}
-button.delete{background:#ef4444;color:#fff}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;z-index:10}
-.modal-content{background:rgba(2,6,23,.9);padding:20px;border-radius:12px;width:90%;max-width:400px;border:2px solid #38bdf8}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{border:1px solid #38bdf8;padding:6px;text-align:left;color:#fff}
-th{background:rgba(56,189,248,0.3)}
+section{max-width:900px;margin:20px auto;background:rgba(2,6,23,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
+button{padding:6px 12px;border:none;border-radius:6px;background:#38bdf8;color:#fff;cursor:pointer;margin:3px}
+input, select{padding:6px;border-radius:6px;border:none;margin:3px;width:90%}
+.productItem, .giftItem, .orderItem{background:rgba(2,6,23,0.8);padding:8px;border-radius:6px;margin:5px 0;display:flex;justify-content:space-between;align-items:center}
+.productItem div, .giftItem div, .orderItem div{flex:1}
+h2{color:#38bdf8;margin-top:0}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:100;display:none}
+.modal{background:rgba(2,6,23,0.95);padding:30px;border-radius:12px;border:2px solid #38bdf8;text-align:center}
+.modal input, .modal select{width:80%;margin-bottom:10px}
+.modal button{margin-top:5px}
+#logoutBtn{background:#ef4444;color:#fff}
 </style>
 </head>
 <body>
@@ -40,188 +37,194 @@ th{background:rgba(56,189,248,0.3)}
 <div class="side-glow right"></div>
 
 <header>
-<h1>⚙️ Staff Panel MediaMC</h1>
-<p>Gestisci ordini, gift card, categorie e prodotti</p>
+<h1>⚙️ Pannello Staff MediaMC</h1>
+<p>Gestione Gift Card, Ordini e Prodotti</p>
 </header>
 
-<div class="section" id="loginSection">
-  <h2>Login Staff</h2>
-  <input type="password" id="staffPass" placeholder="Inserisci Password">
-  <button onclick="login()">Accedi</button>
-  <p id="loginMsg" style="color:#facc15"></p>
-</div>
+<section id="loginSection">
+<h2>Login Staff</h2>
+<input type="password" id="staffPass" placeholder="Password Staff">
+<button onclick="checkLogin()">Accedi</button>
+</section>
 
-<div id="staffContent" style="display:none">
+<section id="staffPanel" style="display:none">
 
-  <!-- ORDINI -->
-  <div class="section">
-    <h2>Ordini</h2>
-    <input type="text" id="searchOrder" placeholder="Cerca per ID">
-    <button onclick="searchOrders()">Cerca</button>
-    <table>
-      <thead><tr><th>ID Ordine</th><th>Nick</th><th>Totale</th><th>Prodotti</th></tr></thead>
-      <tbody id="ordersTable"></tbody>
-    </table>
-  </div>
+<!-- CREAZIONE CATEGORIE -->
+<h2>Categorie Prodotti</h2>
+<input type="text" id="catName" placeholder="Nome Categoria">
+<button onclick="createCategory()">Crea Categoria</button>
+<div id="categoryList"></div>
 
-  <!-- GIFTCARD -->
-  <div class="section">
-    <h2>Gift Card</h2>
-    <button class="create" onclick="openGiftModal()">Crea Gift Card</button>
-    <table>
-      <thead><tr><th>Codice</th><th>Valore</th><th>Stato</th><th>Elimina</th></tr></thead>
-      <tbody id="giftTable"></tbody>
-    </table>
-  </div>
+<hr>
 
-  <!-- CREAZIONE CATEGORIE -->
-  <div class="section">
-    <h2>Categorie e Prodotti</h2>
-    <input type="text" id="newCat" placeholder="Nuova Categoria">
-    <button class="create" onclick="addCategory()">Crea Categoria</button>
-    <select id="catSelect"></select>
-    <button class="create" onclick="openProductModal()">Crea Prodotto</button>
-    <table>
-      <thead><tr><th>Categoria</th><th>Nome</th><th>Prezzo</th><th>Descrizione</th><th>Immagine</th></tr></thead>
-      <tbody id="productTable"></tbody>
-    </table>
-  </div>
-</div>
+<!-- CREAZIONE PRODOTTI -->
+<h2>Prodotti</h2>
+<input type="text" id="prodName" placeholder="Titolo Prodotto">
+<select id="prodCat"></select>
+<input type="number" id="prodPrice" placeholder="Prezzo">
+<input type="text" id="prodDesc" placeholder="Descrizione">
+<input type="text" id="prodImg" placeholder="URL Immagine (facoltativa)">
+<button onclick="createProduct()">Crea Prodotto</button>
+<div id="productList"></div>
 
-<!-- MODAL GIFT CARD -->
-<div class="modal" id="giftModal">
-  <div class="modal-content">
-    <h3>Crea Gift Card</h3>
+<hr>
+
+<!-- GIFT CARD -->
+<h2>Gift Card</h2>
+<button onclick="openGiftModal()">Crea Gift Card</button>
+<div id="giftList"></div>
+
+<hr>
+
+<!-- ORDINI -->
+<h2>Lista Ordini</h2>
+<input type="text" id="searchID" placeholder="Cerca Ordine per ID">
+<button onclick="searchOrder()">Cerca</button>
+<div id="ordersList"></div>
+
+<hr>
+<button id="logoutBtn" onclick="logout()">Logout</button>
+</section>
+
+<!-- MODAL GIFT -->
+<div class="modal-bg" id="giftModal">
+  <div class="modal">
+    <h2>Crea Gift Card</h2>
     <input type="text" id="giftName" placeholder="Nome Gift Card">
-    <input type="number" id="giftValue" placeholder="Valore €">
-    <button class="create" onclick="createGift()">Crea</button>
+    <input type="number" id="giftValue" placeholder="Valore (€)">
+    <button onclick="createGift()">Crea</button>
     <button onclick="closeGiftModal()">Chiudi</button>
   </div>
 </div>
 
-<!-- MODAL PRODOTTO -->
-<div class="modal" id="productModal">
-  <div class="modal-content">
-    <h3>Crea Prodotto</h3>
-    <input type="text" id="prodName" placeholder="Nome Prodotto">
-    <input type="number" id="prodPrice" placeholder="Prezzo €">
-    <input type="text" id="prodDesc" placeholder="Descrizione">
-    <input type="text" id="prodImage" placeholder="URL Immagine (lascia vuoto se non serve)">
-    <select id="prodCat"></select>
-    <button class="create" onclick="createProduct()">Crea</button>
-    <button onclick="closeProductModal()">Chiudi</button>
-  </div>
-</div>
-
 <script>
-// STORAGES
-let orders = JSON.parse(localStorage.getItem('orders'))||[];
-let giftCards = JSON.parse(localStorage.getItem('giftCards'))||[];
-let categories = JSON.parse(localStorage.getItem('categories'))||['Duels','BedWars'];
-let products = JSON.parse(localStorage.getItem('products'))||[];
-
 // LOGIN
-function login(){
-  const pass = document.getElementById('staffPass').value;
+function checkLogin(){
+  const pass=document.getElementById('staffPass').value;
   if(pass==='staff123'){
     document.getElementById('loginSection').style.display='none';
-    document.getElementById('staffContent').style.display='block';
-    renderOrders();
-    renderGiftCards();
-    renderCategories();
-  } else {document.getElementById('loginMsg').textContent='Password errata'}
+    document.getElementById('staffPanel').style.display='block';
+    loadCategories();
+    loadProducts();
+    loadGifts();
+    loadOrders();
+  } else alert('Password errata');
 }
 
-// ORDINI
-function renderOrders(filterId=''){
-  const tbody=document.getElementById('ordersTable');
-  tbody.innerHTML='';
-  orders.filter(o=>!filterId||o.id.includes(filterId)).forEach(o=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${o.id}</td><td>${o.nick}</td><td>€${o.total}</td><td>${o.cart.map(p=>p.name).join(', ')}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-function searchOrders(){
-  const val=document.getElementById('searchOrder').value.trim();
-  renderOrders(val);
+function logout(){
+  document.getElementById('staffPanel').style.display='none';
+  document.getElementById('loginSection').style.display='block';
+  document.getElementById('staffPass').value='';
 }
 
-// GIFTCARD
-function renderGiftCards(){
-  const tbody=document.getElementById('giftTable');
-  tbody.innerHTML='';
-  giftCards.forEach((g,idx)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${g.code}</td><td>€${g.value}</td><td>${g.used?'Usata':'Attiva'}</td>
-    <td><button class="delete" onclick="deleteGift(${idx})">X</button></td>`;
-    tbody.appendChild(tr);
+// CATEGORIE
+let categories=JSON.parse(localStorage.getItem('categories'))||['Duels','BedWars'];
+function createCategory(){
+  const name=document.getElementById('catName').value.trim();
+  if(!name) return alert('Inserisci nome categoria');
+  if(categories.includes(name)) return alert('Categoria già esistente');
+  categories.push(name);
+  localStorage.setItem('categories',JSON.stringify(categories));
+  document.getElementById('catName').value='';
+  loadCategories();
+  loadProducts(); // aggiorna select
+}
+function loadCategories(){
+  const div=document.getElementById('categoryList');
+  const sel=document.getElementById('prodCat');
+  div.innerHTML='';
+  sel.innerHTML='';
+  categories.forEach(c=>{
+    div.innerHTML+=`<div>${c}</div>`;
+    sel.innerHTML+=`<option value="${c}">${c}</option>`;
   });
 }
+
+// PRODOTTI
+let products=JSON.parse(localStorage.getItem('products'))||[];
+function createProduct(){
+  const name=document.getElementById('prodName').value.trim();
+  const cat=document.getElementById('prodCat').value;
+  const price=parseFloat(document.getElementById('prodPrice').value);
+  const desc=document.getElementById('prodDesc').value.trim();
+  const img=document.getElementById('prodImg').value.trim();
+  if(!name||!cat||isNaN(price)) return alert('Compila tutti i campi corretti');
+  products.push({name,cat,price,desc,img});
+  localStorage.setItem('products',JSON.stringify(products));
+  document.getElementById('prodName').value='';
+  document.getElementById('prodPrice').value='';
+  document.getElementById('prodDesc').value='';
+  document.getElementById('prodImg').value='';
+  loadProducts();
+}
+function loadProducts(){
+  const div=document.getElementById('productList');
+  div.innerHTML='';
+  products.forEach((p,idx)=>{
+    div.innerHTML+=`<div class="productItem">
+      <div>
+        <strong>${p.name}</strong><br>
+        Cat: ${p.cat}<br>
+        Prezzo: €${p.price}<br>
+        ${p.img?`<img src="${p.img}" width="60">`:''}<br>
+        ${p.desc}
+      </div>
+      <button onclick="products.splice(${idx},1);localStorage.setItem('products',JSON.stringify(products));loadProducts()">X</button>
+    </div>`;
+  });
+}
+
+// GIFT CARD
+let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
 function openGiftModal(){document.getElementById('giftModal').style.display='flex'}
 function closeGiftModal(){document.getElementById('giftModal').style.display='none'}
 function createGift(){
   const name=document.getElementById('giftName').value.trim();
   const value=parseFloat(document.getElementById('giftValue').value);
-  if(!name||!value)return alert('Compila tutti i campi');
-  const code='GC-'+Math.floor(Math.random()*100000);
-  giftCards.push({code, name, value, used:false});
+  if(!name||isNaN(value)) return alert('Compila tutti i campi corretti');
+  giftCards.push({code:name.toUpperCase(),value,used:false});
   localStorage.setItem('giftCards',JSON.stringify(giftCards));
   document.getElementById('giftName').value='';
   document.getElementById('giftValue').value='';
   closeGiftModal();
-  renderGiftCards();
+  loadGifts();
 }
-function deleteGift(idx){
-  if(confirm('Eliminare gift card?')){giftCards.splice(idx,1);localStorage.setItem('giftCards',JSON.stringify(giftCards));renderGiftCards()}
+function loadGifts(){
+  const div=document.getElementById('giftList');
+  div.innerHTML='';
+  giftCards.forEach((g,idx)=>{
+    div.innerHTML+=`<div class="giftItem">
+      <div>${g.code} - €${g.value} ${g.used?'(Usata)':''}</div>
+      <button onclick="giftCards.splice(${idx},1);localStorage.setItem('giftCards',JSON.stringify(giftCards));loadGifts()">X</button>
+    </div>`;
+  });
 }
 
-// CATEGORIE E PRODOTTI
-function renderCategories(){
-  const sel=document.getElementById('catSelect');
-  const prodSel=document.getElementById('prodCat');
-  sel.innerHTML=''; prodSel.innerHTML='';
-  categories.forEach(c=>{
-    const opt=document.createElement('option'); opt.value=c; opt.textContent=c; sel.appendChild(opt);
-    const opt2=document.createElement('option'); opt2.value=c; opt2.textContent=c; prodSel.appendChild(opt2);
+// ORDINI
+let orders=JSON.parse(localStorage.getItem('orders'))||[];
+function loadOrders(){
+  const div=document.getElementById('ordersList');
+  div.innerHTML='';
+  orders.forEach((o,idx)=>{
+    div.innerHTML+=`<div class="orderItem">
+      <div>ID: ${o.id} - Nick: ${o.nick} - Totale: €${o.total}<br>Prodotti: ${o.cart.map(p=>p.name).join(', ')}</div>
+    </div>`;
   });
-  renderProducts();
 }
-function addCategory(){
-  const val=document.getElementById('newCat').value.trim();
-  if(!val)return;
-  if(!categories.includes(val)) categories.push(val);
-  localStorage.setItem('categories',JSON.stringify(categories));
-  document.getElementById('newCat').value='';
-  renderCategories();
-}
-function openProductModal(){document.getElementById('productModal').style.display='flex'}
-function closeProductModal(){document.getElementById('productModal').style.display='none'}
-function createProduct(){
-  const name=document.getElementById('prodName').value.trim();
-  const price=parseFloat(document.getElementById('prodPrice').value);
-  const desc=document.getElementById('prodDesc').value.trim();
-  const img=document.getElementById('prodImage').value.trim();
-  const cat=document.getElementById('prodCat').value;
-  if(!name||!price||!desc||!cat)return alert('Compila tutti i campi tranne immagine');
-  products.push({name,price,desc,img,cat});
-  localStorage.setItem('products',JSON.stringify(products));
-  document.getElementById('prodName').value='';
-  document.getElementById('prodPrice').value='';
-  document.getElementById('prodDesc').value='';
-  document.getElementById('prodImage').value='';
-  closeProductModal();
-  renderProducts();
-}
-function renderProducts(){
-  const tbody=document.getElementById('productTable');
-  tbody.innerHTML='';
-  products.forEach(p=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${p.cat}</td><td>${p.name}</td><td>€${p.price}</td><td>${p.desc}</td><td>${p.img?'<a href="'+p.img+'" target="_blank">Vedi</a>':'N/A'}</td>`;
-    tbody.appendChild(tr);
+function searchOrder(){
+  const id=document.getElementById('searchID').value.trim();
+  if(!id) return loadOrders();
+  const div=document.getElementById('ordersList');
+  div.innerHTML='';
+  const found=orders.filter(o=>o.id===id);
+  if(found.length===0){div.innerHTML='Nessun ordine trovato'; return;}
+  found.forEach(o=>{
+    div.innerHTML+=`<div class="orderItem">
+      <div>ID: ${o.id} - Nick: ${o.nick} - Totale: €${o.total}<br>Prodotti: ${o.cart.map(p=>p.name).join(', ')}</div>
+    </div>`;
   });
 }
 </script>
+
 </body>
 </html>
