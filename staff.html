@@ -22,12 +22,13 @@ h3{margin-top:20px;color:#38bdf8}
 <p>Accesso riservato allo staff</p>
 </header>
 
-<section>
+<section id="loginSection">
 <h2>Login Staff</h2>
 <input type="password" id="staffPass" placeholder="Inserisci password">
 <button onclick="checkStaff()">Accedi</button>
+</section>
 
-<div id="content">
+<section id="content">
   <h3>Ricerca Ordine per ID</h3>
   <input id="searchId" placeholder="Inserisci ID ordine">
   <button onclick="searchOrder()">Cerca</button>
@@ -39,15 +40,18 @@ h3{margin-top:20px;color:#38bdf8}
 
   <h3>Gift Card Attive</h3>
   <div id="giftList"></div>
-</div>
 </section>
 
 <script>
 let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
 
+// STAFF LOGIN
 function checkStaff(){
   const pass=document.getElementById('staffPass').value;
   if(pass==='staff123'){
+    // Nascondi login
+    document.getElementById('loginSection').style.display='none';
+    // Mostra contenuto
     document.getElementById('content').style.display='block';
     alert('Accesso consentito');
     renderGiftCards();
