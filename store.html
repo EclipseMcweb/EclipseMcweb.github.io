@@ -10,158 +10,94 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
   background: linear-gradient(135deg, #0ea5e9, #1e3a8a);
   color: #fff;
-  overflow-x: hidden;
 }
 
-/* GLOW LATERALI */
-.side-glow {
-  position: fixed;
-  top: -50%;
-  width: 120px;
-  height: 200%;
-  background: linear-gradient(180deg, transparent, rgba(56,189,248,0.4), transparent);
-  filter: blur(45px);
-  animation: floatGlow 10s linear infinite;
-  pointer-events: none;
-  z-index: -1;
-}
-.side-glow.left { left: -50px; }
-.side-glow.right { right: -50px; animation-delay: 5s; }
-@keyframes floatGlow {
-  0% { transform: translateY(-20%); }
-  100% { transform: translateY(20%); }
-}
-
-/* HEADER */
 header {
   text-align: center;
-  padding: 70px 20px;
+  padding: 60px 20px;
   background: rgba(2,6,23,0.85);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-}
-header h1 { font-size: 3em; color: #38bdf8; }
-header p { color: #bae6fd; font-size: 1.2em; }
-
-/* LOGIN POPUP */
-#loginPopup {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.75);
-  display:flex; justify-content:center; align-items:center;
-  z-index:1000;
-}
-#loginPopupContent {
-  background: rgba(2,6,23,0.95);
-  padding: 30px;
-  border-radius: 14px;
-  text-align:center;
-}
-#loginPopupContent input {
-  padding: 10px; border-radius:6px; border:1px solid #38bdf8;
-  width:200px; margin-right:10px;
-}
-#loginPopupContent button {
-  padding:10px 15px; border:none; border-radius:6px; background:#38bdf8; color:#fff; font-weight:bold; cursor:pointer;
 }
 
-/* STORE ITEMS */
-.store-section, #cartSection, #staffSection {
+.store-section, #cartSection, #staffSection, #paymentSection {
   max-width: 700px;
   margin: 20px auto;
-  background: rgba(2,6,23,0.85);
+  background: rgba(2,6,23,0.9);
   border: 2px solid #38bdf8;
   border-radius: 14px;
   padding: 20px;
 }
+
 .store-item, #cartItems div, #staffOrders div {
-  display: flex; justify-content: space-between; padding:8px 0; border-bottom:1px solid #38bdf8;
-}
-.store-item:last-child, #cartItems div:last-child, #staffOrders div:last-child { border-bottom:none; }
-.store-item button, #cartItems button, #staffSection button {
-  background:#38bdf8; border:none; border-radius:6px; color:#fff; cursor:pointer; padding:6px 12px;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #38bdf8;
 }
 
-/* CARRELLO */
-#checkoutBtn {
-  margin-top: 10px;
-  padding: 8px 12px;
+button {
+  background: #38bdf8;
   border: none;
   border-radius: 6px;
-  background: #22c55e;
-  font-weight: bold;
+  color: #fff;
   cursor: pointer;
-}
-
-/* ORDINE GENERATO */
-#orderResult {
-  text-align: center;
-  margin-top: 15px;
-  background: rgba(56,189,248,0.2);
-  padding: 12px;
-  border-radius: 8px;
+  padding: 6px 12px;
   font-weight: bold;
 }
 
-/* STAFF SECTION */
-#staffSection {
-  border-color:#facc15;
-  display:none; /* nascosta di default, compare col pulsante */
-  max-width:700px; margin:20px auto; padding:20px; border-radius:10px; background: rgba(2,6,23,0.9);
-}
-#staffSection h2 { color:#facc15; margin-top:0; }
-#staffSection input { padding:6px; border-radius:6px; border:1px solid #facc15; margin-right:6px; }
-#staffSection button { padding:6px 10px; background:#facc15; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
+#checkoutBtn { background: #22c55e; }
 
-/* PULSANTE STAFF */
+#paymentSection {
+  border-color: #22c55e;
+  display: none;
+}
+
+#staffSection {
+  border-color: #facc15;
+  display: none;
+}
+
 #openStaffBtn {
-  display:block;
-  margin:30px auto;
-  padding:10px 15px;
-  border:none;
-  border-radius:6px;
-  background:#facc15;
-  color:#000;
-  font-weight:bold;
-  cursor:pointer;
-  font-size:1em;
+  display: block;
+  margin: 30px auto;
+  background: #facc15;
+  color: #000;
 }
 </style>
 </head>
 <body>
 
-<div class="side-glow left"></div>
-<div class="side-glow right"></div>
-
 <header>
-<h1>🛒 MediaMC Store</h1>
-<p>Acquista oggetti, cosmetici e abbonamenti Premium</p>
+  <h1>🛒 MediaMC Store</h1>
+  <p>Acquista contenuti Premium per MediaMC</p>
 </header>
 
-<!-- LOGIN POPUP -->
-<div id="loginPopup">
-  <div id="loginPopupContent">
-    <h2>Benvenuto nello Store</h2>
-    <p>Inserisci il tuo Nick Minecraft</p>
-    <input type="text" id="nickInput" placeholder="Nick Minecraft">
+<!-- LOGIN -->
+<div id="loginPopup" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;">
+  <div style="background:#020617;padding:25px;border-radius:12px;text-align:center;">
+    <h2>Inserisci il tuo Nick Minecraft</h2>
+    <input id="nickInput" placeholder="Nick Minecraft">
+    <br><br>
     <button onclick="login()">Entra</button>
   </div>
 </div>
 
-<!-- STORE ITEMS -->
+<!-- STORE -->
 <div id="storeSection" class="store-section" style="display:none;">
-<h2>Prodotti Disponibili</h2>
+<h2>Prodotti</h2>
+
 <div class="store-item">
-  <span>Kit Starter</span>
-  <button onclick="addToCart('Kit Starter', 5)">Aggiungi (€5)</button>
+  <span>Kit Duels</span>
+  <button onclick="addToCart('Kit Duels',5)">Aggiungi €5</button>
 </div>
+
 <div class="store-item">
-  <span>Skin Esclusiva</span>
-  <button onclick="addToCart('Skin Esclusiva', 3)">Aggiungi (€3)</button>
+  <span>Skin BedWars</span>
+  <button onclick="addToCart('Skin BedWars',3)">Aggiungi €3</button>
 </div>
+
 <div class="store-item">
-  <span>Abbonamento Premium</span>
-  <button onclick="addToCart('Premium', 10)">Aggiungi (€10)</button>
+  <span>Premium Survival</span>
+  <button onclick="addToCart('Premium Survival',10)">Aggiungi €10</button>
 </div>
 </div>
 
@@ -170,92 +106,86 @@ header p { color: #bae6fd; font-size: 1.2em; }
 <h2>Carrello</h2>
 <div id="cartItems"></div>
 <button id="checkoutBtn" onclick="checkout()">Procedi Ordine</button>
-<div id="orderResult"></div>
 </div>
 
-<!-- PULSANTE PER APRIRE SEZIONE STAFF -->
-<button id="openStaffBtn" onclick="document.getElementById('staffSection').style.display='block';">
+<!-- PAGAMENTO -->
+<div id="paymentSection">
+<h2>Pagamento tramite Bonifico Bancario</h2>
+<p><b>ID Ordine:</b> <span id="payOrderId"></span></p>
+<p><b>Importo:</b> €<span id="payTotal"></span></p>
+
+<hr>
+
+<p><b>Intestatario:</b> MediaMC Network</p>
+<p><b>IBAN:</b> <span style="color:#facc15;">INSERIREMO DOMANI</span></p>
+<p><b>Causale:</b> <span id="payCausal"></span></p>
+
+<p style="margin-top:15px;color:#a5f3fc;">
+Dopo aver effettuato il bonifico, lo staff verificherà il pagamento e l’ordine verrà completato.
+</p>
+</div>
+
+<!-- STAFF -->
+<button id="openStaffBtn" onclick="document.getElementById('staffSection').style.display='block'">
 Apri Sezione Staff
 </button>
 
-<!-- STAFF SECTION -->
 <div id="staffSection">
 <h2>Sezione Staff</h2>
-<p>Inserisci la password per vedere gli ordini:</p>
 <input type="password" id="staffPass" placeholder="Password Staff">
 <button onclick="loginStaff()">Accedi</button>
 <div id="staffOrders" style="margin-top:15px;"></div>
 </div>
 
 <script>
-let nick = '';
-let cart = [];
-let orders = JSON.parse(localStorage.getItem('orders')) || [];
+let nick='';
+let cart=[];
+let orders=JSON.parse(localStorage.getItem('orders'))||[];
 
-// LOGIN UTENTE
-function login() {
-  const input = document.getElementById('nickInput');
-  if(input.value.trim()===''){ alert('Inserisci il tuo nick!'); return; }
-  nick = input.value.trim();
-  document.getElementById('loginPopup').style.display='none';
-  document.getElementById('storeSection').style.display='block';
-  document.getElementById('cartSection').style.display='block';
-  alert(`Benvenuto ${nick}! Puoi iniziare a fare acquisti.`);
+function login(){
+  nick=document.getElementById('nickInput').value.trim();
+  if(!nick) return alert('Inserisci il nick');
+  loginPopup.style.display='none';
+  storeSection.style.display='block';
+  cartSection.style.display='block';
 }
 
-// AGGIUNGI AL CARRELLO
-function addToCart(name, price) {
-  cart.push({name, price});
+function addToCart(name,price){
+  cart.push({name,price});
   renderCart();
 }
 
-// MOSTRA CARRELLO
-function renderCart() {
-  const cartDiv = document.getElementById('cartItems');
-  cartDiv.innerHTML='';
-  cart.forEach((item,i)=>{
-    const div=document.createElement('div');
-    div.innerHTML=`${item.name} - €${item.price} <button onclick="removeFromCart(${i})">Rimuovi</button>`;
-    cartDiv.appendChild(div);
+function renderCart(){
+  cartItems.innerHTML='';
+  cart.forEach((i,idx)=>{
+    cartItems.innerHTML+=`${i.name} €${i.price} <button onclick="cart.splice(${idx},1);renderCart()">X</button><br>`;
   });
 }
 
-// RIMUOVI DAL CARRELLO
-function removeFromCart(i){
-  cart.splice(i,1);
-  renderCart();
-}
-
-// PROCEDI ORDINE
 function checkout(){
-  if(cart.length===0){ alert('Il carrello è vuoto!'); return; }
-  const orderId = 'MM-'+Math.floor(Math.random()*100000);
-  const total = cart.reduce((sum,i)=>sum+i.price,0);
-  const order = {id:orderId, nick, items:[...cart], total};
-  orders.push(order);
-  localStorage.setItem('orders', JSON.stringify(orders));
+  if(cart.length===0) return alert('Carrello vuoto');
+  const id='MM-'+Math.floor(Math.random()*100000);
+  const total=cart.reduce((s,i)=>s+i.price,0);
+  orders.push({id,nick,items:cart,total});
+  localStorage.setItem('orders',JSON.stringify(orders));
+
+  payOrderId.textContent=id;
+  payTotal.textContent=total;
+  payCausal.textContent=id;
+
+  paymentSection.style.display='block';
   cart=[];
   renderCart();
-  document.getElementById('orderResult').innerHTML=`
-  Ordine creato!<br>ID: <b>${orderId}</b><br>
-  Totale: €${total}<br>
-  Apri un ticket nel nostro Discord e uno staff ti aiuterà a completare il pagamento.
-  `;
 }
 
-// LOGIN STAFF
 function loginStaff(){
-  const pass = document.getElementById('staffPass').value;
-  if(pass!=='staff123'){ alert('Password errata'); return; }
-  const staffDiv = document.getElementById('staffOrders');
-  staffDiv.innerHTML='';
+  if(staffPass.value!=='staff123') return alert('Password errata');
+  staffOrders.innerHTML='';
   orders.forEach(o=>{
-    const div=document.createElement('div');
-    div.innerHTML=`Nick: ${o.nick} | ID: ${o.id} | Prodotti: ${o.items.map(i=>i.name).join(', ')} | Totale: €${o.total}`;
-    staffDiv.appendChild(div);
+    staffOrders.innerHTML+=`<div>${o.nick} | ${o.id} | €${o.total}</div>`;
   });
-  alert('Accesso Staff consentito!');
 }
 </script>
+
 </body>
 </html>
