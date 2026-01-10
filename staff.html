@@ -58,7 +58,7 @@ button{
 <section id="login">
   <h2>Accesso Staff</h2>
   <input type="password" id="staffPass" placeholder="Password Staff">
-  <button onclick="login()">Accedi</button>
+  <button id="loginBtn">Accedi</button>
 </section>
 
 <!-- PANNELLO -->
@@ -93,19 +93,23 @@ const STAFF_PASSWORD = "staff123";
 let orders = JSON.parse(localStorage.getItem("orders")) || [];
 let giftCards = JSON.parse(localStorage.getItem("giftCards")) || {};
 
-function login(){
-  if(staffPass.value !== STAFF_PASSWORD){
+// LOGIN STAFF CORRETTO
+document.getElementById("loginBtn").addEventListener("click", function() {
+  const pass = document.getElementById("staffPass").value;
+  if(pass !== STAFF_PASSWORD){
     alert("Password errata");
     return;
   }
-  login.style.display="none";
-  panel.classList.remove("hidden");
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").classList.remove("hidden");
   renderGifts();
-}
+});
 
+// ORDINI
 function searchOrder(){
+  const id = document.getElementById("searchOrder").value.trim();
+  const ordersList = document.getElementById("ordersList");
   ordersList.innerHTML="";
-  const id = searchOrder.value.trim();
   const o = orders.find(x=>x.id===id);
 
   if(!o){
@@ -123,9 +127,11 @@ function searchOrder(){
   `;
 }
 
+// GIFT CARD
 function createGift(){
-  const code = giftCode.value.trim().toUpperCase();
-  const value = Number(giftValue.value);
+  const code = document.getElementById("giftCode").value.trim().toUpperCase();
+  const value = Number(document.getElementById("giftValue").value);
+  const giftMsg = document.getElementById("giftMsg");
 
   if(!code || value<=0){
     giftMsg.textContent="Dati non validi";
@@ -136,12 +142,13 @@ function createGift(){
   localStorage.setItem("giftCards",JSON.stringify(giftCards));
 
   giftMsg.textContent=`Gift Card ${code} creata (€${value})`;
-  giftCode.value="";
-  giftValue.value="";
+  document.getElementById("giftCode").value="";
+  document.getElementById("giftValue").value="";
   renderGifts();
 }
 
 function renderGifts(){
+  const giftList = document.getElementById("giftList");
   giftList.innerHTML="";
   Object.keys(giftCards).forEach(code=>{
     giftList.innerHTML+=`
