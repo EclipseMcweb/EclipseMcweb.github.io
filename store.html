@@ -10,40 +10,52 @@ body{
   background:linear-gradient(135deg,#0ea5e9,#020617);
   color:#fff;overflow-x:hidden
 }
-.side-glow{
-  position:fixed;top:-50%;width:120px;height:200%;
-  background:linear-gradient(180deg,transparent,rgba(56,189,248,.4),transparent);
-  filter:blur(45px);animation:float 10s linear infinite;z-index:-1
-}
+/* LUCi LATERALI */
+.side-glow{position:fixed;top:-50%;width:120px;height:200%;background:linear-gradient(180deg,transparent,rgba(56,189,248,.4),transparent);filter:blur(45px);animation:float 10s linear infinite;z-index:-1}
 .left{left:-50px}.right{right:-50px;animation-delay:5s}
 @keyframes float{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
 
 header{text-align:center;padding:60px 20px;background:rgba(2,6,23,.85)}
-h1{color:#38bdf8}
-.container{max-width:1100px;margin:auto;padding:30px}
-.box{
-  background:rgba(2,6,23,.8);
-  border:2px solid #38bdf8;
-  border-radius:14px;
-  padding:15px;
-  margin:15px 0;
-  transition:.3s
+header h1{color:#38bdf8;margin:0}
+header p{color:#bae6fd;margin:5px 0 15px}
+header input{padding:8px;border-radius:6px;border:none;width:200px;margin-right:10px}
+header button{padding:8px 12px;border-radius:6px;border:none;background:#38bdf8;color:#fff;cursor:pointer}
+
+#nickBar{
+  position:fixed;top:0;left:0;width:100%;padding:10px 20px;
+  background:rgba(2,6,23,.9);border-bottom:2px solid #38bdf8;
+  display:none;justify-content:space-between;align-items:center;z-index:20;
 }
-.box:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
-.categories{display:flex;gap:15px;flex-wrap:wrap}
-.cat{cursor:pointer;padding:8px 12px;border:1px solid #38bdf8;border-radius:8px}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.product{border:1px solid #38bdf8;border-radius:10px;padding:10px;background:rgba(0,10,30,0.6)}
-button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer}
-#cartBtn{position:fixed;top:20px;right:20px;z-index:10}
-#staffLogin{margin-top:40px;text-align:center;font-size:.9em}
+#nickBar span{color:#38bdf8;font-weight:bold;}
+#nickBar button{background:#ef4444;color:#fff;padding:5px 10px;border:none;border-radius:6px;cursor:pointer}
+
+.container{max-width:1100px;margin:auto;padding:20px;margin-top:60px}
+.categories{display:flex;gap:15px;flex-wrap:wrap;margin-bottom:20px}
+.cat{padding:10px 15px;background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:12px;cursor:pointer;transition:.3s}
+.cat:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(56,189,248,.6)}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+.product{background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:10px;padding:10px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;text-align:center}
+.product:hover{box-shadow:0 0 20px #38bdf8}
+.product img{max-width:100%;border-radius:6px;margin-bottom:5px}
+button.addBtn{background:#22c55e;margin-top:5px}
+
+#cartBtn{position:fixed;top:20px;right:20px;z-index:10;padding:10px 15px;border-radius:8px;border:none;background:#38bdf8;color:#fff;cursor:pointer}
+#staffLogin{margin-top:30px;text-align:center;font-size:.9em}
+
+.descBox{display:none;margin-top:5px;color:#bae6fd;font-size:.9em;text-align:left;width:100%;}
 </style>
 </head>
 <body>
+
 <div class="side-glow left"></div>
 <div class="side-glow right"></div>
 
-<header id="header">
+<div id="nickBar">
+  <span id="nickDisplay"></span>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<header id="headerArea">
 <h1>🛒 MediaMC Store</h1>
 <p>Inserisci il tuo nick Minecraft per continuare</p>
 <input id="nickInput" placeholder="Nick Minecraft">
@@ -53,67 +65,78 @@ button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:
 <button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
 
 <div class="container" id="store" style="display:none">
-  <div class="box">
-    <h2>Categorie</h2>
-    <div class="categories" id="cats"></div>
-  </div>
-
-  <div class="box">
-    <h2>Prodotti</h2>
-    <div class="products" id="products"></div>
-  </div>
-
+  <div class="categories" id="cats"></div>
+  <div class="products" id="products"></div>
   <div id="staffLogin">
     <button onclick="location.href='staff.html'">⚙️ Pannello Staff</button>
   </div>
 </div>
 
 <script>
+let currentCat='';
+
 function enterStore(){
-  const n=document.getElementById('nickInput').value.trim();
-  if(!n){alert("Inserisci il nick Minecraft");return;}
-  sessionStorage.setItem('nick',n);
-  document.getElementById('header').style.display='none';
+  const nick=document.getElementById('nickInput').value.trim();
+  if(!nick){alert("Inserisci il nick Minecraft");return;}
+  sessionStorage.clear();
+  sessionStorage.setItem('nick',nick);
+  document.getElementById('headerArea').style.display='none';
+  document.getElementById('nickBar').style.display='flex';
+  document.getElementById('nickDisplay').textContent=`Loggato come: ${nick}`;
   document.getElementById('store').style.display='block';
   loadStore();
+}
+
+function logout(){
+  sessionStorage.removeItem('nick');
+  location.reload();
 }
 
 function loadStore(){
   const cats=JSON.parse(localStorage.getItem('categories'))||['Duels','Bedwars'];
   const prods=JSON.parse(localStorage.getItem('products'))||[];
-  const cdiv=document.getElementById('cats');
-  cdiv.innerHTML='';
+  const catsDiv=document.getElementById('cats');
+  catsDiv.innerHTML='';
   cats.forEach(c=>{
     const d=document.createElement('div');
     d.className='cat';
     d.textContent=c;
     d.onclick=()=>showProducts(c);
-    cdiv.appendChild(d);
+    catsDiv.appendChild(d);
   });
   showProducts(cats[0]);
 }
 
 function showProducts(cat){
-  const pdiv=document.getElementById('products');
+  currentCat=cat;
+  const pDiv=document.getElementById('products');
   const prods=JSON.parse(localStorage.getItem('products'))||[];
-  pdiv.innerHTML='';
-  prods.filter(p=>p.category===cat).forEach(p=>{
-    const div=document.createElement('div');
-    div.className='product';
-    div.innerHTML=`<b>${p.name}</b><br>€${p.price}<br>${p.desc||''}<br>
-    ${p.img?`<img src="${p.img}" style="max-width:100%;border-radius:6px;margin:5px 0">`:''}
-    <button onclick='addToCart(${JSON.stringify(p)})'>Aggiungi al carrello</button>`;
-    pdiv.appendChild(div);
+  pDiv.innerHTML='';
+  prods.filter(p=>p.category===cat).forEach((p,idx)=>{
+    const prodDiv=document.createElement('div');
+    prodDiv.className='product';
+    prodDiv.innerHTML=`${p.img?`<img src="${p.img}">`:''}<b>${p.name}</b><br>€${p.price}<div class="descBox">${p.desc||''}</div><button class="addBtn">Aggiungi</button>`;
+    prodDiv.addEventListener('click',(e)=>{
+      if(e.target.tagName!=='BUTTON'){
+        const desc=prodDiv.querySelector('.descBox');
+        desc.style.display=desc.style.display==='block'?'none':'block';
+      }
+    });
+    prodDiv.querySelector('button.addBtn').onclick=(e)=>{
+      e.stopPropagation();
+      addToCart(p);
+    };
+    pDiv.appendChild(prodDiv);
   });
 }
 
 function addToCart(p){
   const nick=sessionStorage.getItem('nick');
-  if(!nick){alert("Devi inserire il nick");return;}
+  if(!nick) return alert('Nick non valido');
   let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
   cart.push(p);
   localStorage.setItem('cart_'+nick,JSON.stringify(cart));
-  alert("Aggiunto al carrello");
+  alert("Aggiunto al carrello!");
 }
 </script>
 </body>
