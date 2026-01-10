@@ -5,39 +5,102 @@
 <title>MediaMC Carrello</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;}
-header{text-align:center;padding:40px 20px;background:rgba(2,6,23,0.9);}
-header h1{color:#38bdf8;margin:0;font-size:2.5em;}
-header p{color:#bae6fd;margin:5px 0 0;}
-section{max-width:600px;margin:30px auto;background:rgba(2,6,23,0.8);padding:20px;border-radius:12px;border:2px solid #38bdf8;}
-.productItem{display:flex;justify-content:space-between;align-items:center;background:rgba(0,10,30,0.7);padding:10px;margin:5px 0;border-radius:6px;}
-button{padding:5px 10px;border:none;border-radius:6px;margin-left:5px;cursor:pointer;}
-button.delete{background:#ef4444;color:#fff;}
-button.green{background:#22c55e;color:#fff;}
-input{padding:6px;border-radius:6px;border:none;width:80%;}
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg,#0ea5e9,#020617);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* GLOW LATERALI */
+.side-glow {
+  position: fixed;
+  top: -50%;
+  width: 120px;
+  height: 200%;
+  background: linear-gradient(180deg, transparent, rgba(56,189,248,0.4), transparent);
+  filter: blur(45px);
+  animation: floatGlow 10s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+.side-glow.left { left: -50px; }
+.side-glow.right { right: -50px; animation-delay: 5s; }
+
+@keyframes floatGlow {
+  0% { transform: translateY(-20%); }
+  100% { transform: translateY(20%); }
+}
+
+/* HEADER */
+header {
+  text-align: center;
+  padding: 50px 20px;
+  background: rgba(2,6,23,0.85);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+header h1 { font-size: 2.5em; color: #38bdf8; margin: 0; }
+header p { color: #bae6fd; margin: 5px 0 0; }
+
+/* SECTION */
+section {
+  max-width: 600px;
+  margin: 30px auto;
+  background: rgba(2,6,23,0.8);
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #38bdf8;
+}
+
+.productItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,10,30,0.7);
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 6px;
+}
+
+button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+button.delete { background:#ef4444;color:#fff; }
+button.green { background:#22c55e;color:#fff; }
+button.storeBtn { background:#38bdf8;color:#fff;margin-top:10px; width:100%; }
+
+/* INPUT */
+input { padding:6px; border-radius:6px; border:none; width:80%; margin-bottom:5px; }
+
 </style>
 </head>
 <body>
+<div class="side-glow left"></div>
+<div class="side-glow right"></div>
 
 <header>
-<h1>🛒 Carrello MediaMC</h1>
-<p>Controlla i tuoi prodotti prima di procedere</p>
+  <h1>🛒 Carrello MediaMC</h1>
+  <p>Controlla i tuoi prodotti prima di procedere</p>
 </header>
 
 <section>
-<h2>Prodotti</h2>
-<div id="cartList"></div>
-<h3>Totale: €<span id="total">0</span></h3>
+  <h2>Prodotti</h2>
+  <div id="cartList"></div>
+  <h3>Totale: €<span id="total">0</span></h3>
 
-<h3>GiftCard</h3>
-<input id="giftInput" placeholder="Inserisci Gift Card">
-<button onclick="applyGift()">Applica</button>
-<p id="giftMsg"></p>
+  <h3>GiftCard</h3>
+  <input id="giftInput" placeholder="Inserisci Gift Card">
+  <button onclick="applyGift()">Applica</button>
+  <p id="giftMsg"></p>
 
-<button class="green" id="checkoutBtn" onclick="checkout()">Procedi Ordine</button>
-<button onclick="clearCart()" style="background:#ef4444;color:#fff;">🗑️ Svuota Carrello</button>
-<br><br>
-<button onclick="window.location.href='store.html'" style="background:#38bdf8;color:#fff;">← Torna allo Store</button>
+  <button class="green" id="checkoutBtn" onclick="checkout()">Procedi Ordine</button>
+  <button onclick="clearCart()">🗑️ Svuota Carrello</button>
+  <button class="storeBtn" onclick="window.location.href='store.html'">← Torna allo Store</button>
 </section>
 
 <script>
@@ -97,7 +160,7 @@ function checkout(){
   const tot = cart.reduce((s,p)=>s+p.price,0)-giftValue;
   const id = 'MM-'+Math.floor(Math.random()*100000);
   const checkoutData = {id, cart, total: tot, nick};
-  // Salviamo in lista globale ordini
+  // Salva in lista globale ordini
   let checkoutDataList = JSON.parse(localStorage.getItem('checkoutDataList'))||[];
   checkoutDataList.push(checkoutData);
   localStorage.setItem('checkoutDataList',JSON.stringify(checkoutDataList));
