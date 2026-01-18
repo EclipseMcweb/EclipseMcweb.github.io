@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mediamc Network | Store Ufficiale</title>
+    <title>MediaMC Network | Store Ufficiale</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-blue: #0074D9;
-            --dark-blue: #001b35;
+            --dark-blue: #000b1a;
             --accent-cyan: #00f2ff;
-            --glass: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.05);
             --text-light: #f4f4f4;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: radial-gradient(circle at center, #003366 0%, #001122 100%);
+            background: radial-gradient(circle at center, #001b35 0%, #000810 100%);
             color: var(--text-light);
             margin: 0;
-            overflow-x: hidden;
+            min-height: 100vh;
         }
 
         /* --- NAVBAR --- */
@@ -36,11 +36,9 @@
         }
 
         .logo { font-weight: 900; font-size: 1.4rem; color: var(--accent-cyan); letter-spacing: 1px; }
-        
         .nav-tools { display: flex; align-items: center; gap: 20px; }
+        .btn-staff { color: #ff4444; text-decoration: none; font-size: 0.7rem; font-weight: bold; border: 1px solid #ff4444; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
         
-        .btn-staff { color: #ff4444; text-decoration: none; font-size: 0.8rem; font-weight: bold; border: 1px solid #ff4444; padding: 5px 10px; border-radius: 5px; }
-
         .cart-trigger {
             background: var(--primary-blue);
             color: white;
@@ -52,6 +50,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: 0.3s;
         }
 
         /* --- SIDEBAR CARRELLO --- */
@@ -61,18 +60,19 @@
             top: 0;
             width: 350px;
             height: 100%;
-            background: white;
-            color: #333;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            background: #000b1a;
+            color: white;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 2000;
             padding: 30px;
             display: flex;
             flex-direction: column;
+            border-left: 2px solid var(--primary-blue);
         }
 
         #cart-sidebar.active { right: 0; }
-        .close-cart { text-align: right; cursor: pointer; font-weight: bold; color: var(--primary-blue); font-size: 1.2rem; }
+        .close-cart { text-align: right; cursor: pointer; font-weight: bold; color: var(--accent-cyan); }
 
         /* --- LOGICA PAGINE --- */
         .page { display: none; padding: 40px 20px; max-width: 1100px; margin: auto; animation: fadeIn 0.4s; }
@@ -80,23 +80,29 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- CARD STORE --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; margin-top: 30px; }
-        .card { background: white; color: #222; border-radius: 15px; overflow: hidden; text-align: center; padding-bottom: 20px; transition: 0.3s; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,242,255,0.3); }
-        .card-img { height: 120px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
-        .price { font-size: 1.6rem; font-weight: 900; color: #2ecc71; margin: 10px 0; display: block; }
-        .btn-buy { background: var(--primary-blue); color: white; border: none; padding: 12px; width: 85%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 30px; }
+        .card { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(0, 116, 217, 0.2);
+            border-radius: 15px; 
+            padding: 20px;
+            text-align: center; 
+            transition: 0.3s; 
+        }
+        .card:hover { transform: translateY(-8px); border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); }
+        .card-img { font-size: 3.5rem; margin-bottom: 15px; }
+        .price { font-size: 1.8rem; font-weight: 900; color: #2ecc71; margin: 10px 0; display: block; }
+        .btn-buy { background: var(--primary-blue); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-buy:hover { filter: brightness(1.2); }
 
         /* --- CHECKOUT BOX --- */
-        .checkout-container { background: white; color: #333; padding: 40px; border-radius: 20px; max-width: 600px; margin: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .bank-details { background: #f1f8ff; border-left: 5px solid var(--primary-blue); padding: 20px; margin: 20px 0; line-height: 1.6; }
-        .order-id { color: #e74c3c; font-weight: bold; font-size: 1.2rem; }
+        .checkout-container { background: white; color: #333; padding: 40px; border-radius: 20px; max-width: 500px; margin: auto; }
+        .bank-details { background: #f1f8ff; border-left: 5px solid var(--primary-blue); padding: 20px; margin: 20px 0; font-size: 0.9rem; }
+        .order-id { color: #e74c3c; font-weight: bold; font-family: monospace; font-size: 1.1rem; }
 
         /* --- STAFF PANEL --- */
-        .staff-panel { background: var(--glass); backdrop-filter: blur(10px); padding: 30px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); }
-        input, select { padding: 12px; margin: 10px 0; width: 100%; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-family: inherit; }
-
-        .btn-admin { background: #e67e22; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .staff-panel { background: var(--glass); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        input { padding: 12px; margin: 10px 0; width: 100%; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -104,208 +110,204 @@
     <nav>
         <div class="logo">MEDIAMC NETWORK</div>
         <div class="nav-tools">
-            <a href="#" onclick="showPage('store-page')" style="color:white; text-decoration:none; font-weight:bold;">HOME</a>
-            <a href="#" onclick="authStaff()" class="btn-staff">AREA STAFF</a>
+            <a href="#" onclick="showPage('store-page')" style="color:white; text-decoration:none; font-weight:bold; font-size: 0.9rem;">STORE</a>
+            <div onclick="authStaff()" class="btn-staff">STAFF</div>
             <button class="cart-trigger" onclick="toggleCart()">🛒 <span id="cart-count">0</span></button>
         </div>
     </nav>
 
     <div id="cart-sidebar">
         <div class="close-cart" onclick="toggleCart()">CHIUDI ✕</div>
-        <h2 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">Il tuo Carrello</h2>
-        <div id="cart-items-list" style="flex-grow: 1; overflow-y: auto; margin: 20px 0;">
-            <p style="text-align:center; color:#999; margin-top:50px;">Il carrello è vuoto.</p>
+        <h2 style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">Carrello</h2>
+        <div id="cart-items-list" style="flex-grow: 1; overflow-y: auto;">
+            <p style="text-align:center; opacity:0.5; margin-top:50px;">Il tuo carrello è vuoto.</p>
         </div>
-        <div style="border-top: 2px solid #eee; padding-top: 20px;">
-            <div style="display:flex; justify-content:space-between; font-size: 1.2rem; font-weight:bold; margin-bottom: 15px;">
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+            <div style="display:flex; justify-content:space-between; font-size: 1.4rem; font-weight:900; margin-bottom: 15px;">
                 <span>TOTALE:</span>
                 <span style="color:#2ecc71;">€<span id="cart-total">0.00</span></span>
             </div>
-            <button class="btn-buy" style="width:100%; background:#2ecc71;" onclick="startCheckout()">PROCEDI AL PAGAMENTO</button>
+            <button class="btn-buy" style="background:#2ecc71;" onclick="startCheckout()">PROCEDI</button>
         </div>
     </div>
 
-    <div class="container">
-        
-        <div id="store-page" class="page active">
-            <header style="text-align:center; margin-bottom: 40px;">
-                <h1 style="font-size: 3rem; margin-bottom: 10px;">SURVIVAL STORE</h1>
-                <p style="color: var(--accent-cyan); font-weight: bold;">Potenzia il tuo account su Mediamc Network</p>
-                <div style="margin-top: 30px;">
-                    <label>Nickname Minecraft:</label><br>
-                    <input type="text" id="playerNick" placeholder="Es. Steve_99" style="max-width:300px; text-align:center; background: rgba(0,0,0,0.3); color:white; border-color: var(--primary-blue);">
-                </div>
-            </header>
+    <div id="store-page" class="page active">
+        <header style="text-align:center; margin-bottom: 50px;">
+            <h1 style="font-size: 3.5rem; margin-bottom: 0;">SURVIVAL <span style="color:var(--primary-blue)">STORE</span></h1>
+            <p style="color: var(--accent-cyan); letter-spacing: 2px; font-weight: bold;">MEDIAMC NETWORK</p>
+            <div style="margin-top: 30px;">
+                <label style="font-size: 0.8rem; opacity: 0.7;">INSERISCI NICKNAME MINECRAFT:</label><br>
+                <input type="text" id="playerNick" placeholder="Es. Notch" style="max-width:350px; text-align:center; background: rgba(255,255,255,0.05); color:white; border: 2px solid var(--primary-blue); font-size: 1.1rem;">
+            </div>
+        </header>
 
-            <div class="grid" id="main-grid">
-                <div class="card">
-                    <div class="card-img">👑</div>
-                    <h3>RANK LEGEND</h3>
-                    <p>Fly, /feed e Kit settimanale</p>
-                    <span class="price">19.99</span>
-                    <button class="btn-buy" onclick="addToCart('Rank Legend', 19.99)">Aggiungi al Carrello</button>
-                </div>
-                <div class="card">
-                    <div class="card-img">⚔️</div>
-                    <h3>KIT NETHERITE</h3>
-                    <p>Set completo Full P4</p>
-                    <span class="price">5.50</span>
-                    <button class="btn-buy" onclick="addToCart('Kit Netherite', 5.50)">Aggiungi al Carrello</button>
-                </div>
-                <div class="card">
-                    <div class="card-img">💎</div>
-                    <h3>32 DIAMANTI</h3>
-                    <p>Risorse immediate</p>
-                    <span class="price">2.00</span>
-                    <button class="btn-buy" onclick="addToCart('32 Diamanti', 2.00)">Aggiungi al Carrello</button>
-                </div>
+        <div class="grid" id="main-grid">
+            </div>
+    </div>
+
+    <div id="checkout-page" class="page">
+        <div class="checkout-container">
+            <h2 style="color: var(--primary-blue); text-align:center; margin-top:0;">Riepilogo Ordine</h2>
+            <div style="margin-bottom: 20px; padding: 15px; background: #f0f7ff; border-radius: 10px; border: 1px solid #d0e7ff;">
+                <p style="margin: 5px 0;">👤 Nickname: <b id="chk-nick"></b></p>
+                <label style="font-size: 0.8rem; font-weight: bold; color: #555;">📧 EMAIL PER RICEVUTA:</label>
+                <input type="email" id="checkout-email" placeholder="tua@email.com" style="margin-top:5px; border: 2px solid var(--primary-blue);">
+            </div>
+            
+            <div class="bank-details">
+                <p><b>Intestatario:</b> Mediamc Network</p>
+                <p><b>IBAN:</b> IT 99 L 00000 00000 000000000000</p>
+                <p><b>Importo:</b> <span style="color:#2ecc71; font-weight:900;">€<span id="chk-total"></span></span></p>
+                <p><b>Causale:</b> <span class="order-id">ORDINE #<span id="chk-id"></span></span></p>
+            </div>
+            
+            <p style="font-size: 0.75rem; color: #777; line-height: 1.4;">
+                * Effettua il bonifico e riceverai la ricevuta all'email indicata. L'attivazione dei prodotti avviene entro 24 ore lavorative.
+            </p>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                <button class="btn-buy" style="background:#95a5a6;" onclick="showPage('store-page')">ANNULLA</button>
+                <button class="btn-buy" style="background:#2ecc71;" onclick="finalConfirm()">CONFERMA</button>
             </div>
         </div>
+    </div>
 
-        <div id="checkout-page" class="page">
-            <div class="checkout-container">
-                <h2 style="color: var(--primary-blue); text-align:center;">Dettagli Pagamento</h2>
-                <p>Gentile <b><span id="chk-nick"></span></b>, completa il tuo ordine tramite bonifico:</p>
-                
-                <div class="bank-details">
-                    <p><b>Intestatario:</b> Mediamc Network</p>
-                    <p><b>Banca:</b> Unicredit S.p.A.</p>
-                    <p><b>IBAN:</b> IT 99 L 00000 00000 000000000000</p>
-                    <p><b>Importo Totale:</b> <span style="color:#2ecc71; font-weight:900;">€<span id="chk-total"></span></span></p>
-                    <p><b>Causale Obbligatoria:</b> <span class="order-id">ORDINE #<span id="chk-id"></span></span></p>
-                </div>
-                
-                <p style="font-size: 0.85rem; color: #555;">
-                    <i>Nota: Una volta effettuato il bonifico, invia lo screenshot della contabile sul nostro server Discord per ricevere gli oggetti istantaneamente.</i>
-                </p>
-                <button class="btn-buy" style="width:100%; margin-top:20px;" onclick="showPage('store-page')">Torna allo Store</button>
+    <div id="staff-page" class="page">
+        <h1 style="border-left: 5px solid #ff4444; padding-left: 15px;">PANNELLO STAFF</h1>
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="staff-panel">
+                <h3>➕ AGGIUNGI PRODOTTO</h3>
+                <input type="text" id="st-name" placeholder="Nome Oggetto">
+                <input type="number" id="st-price" placeholder="Prezzo (€)">
+                <input type="text" id="st-icon" placeholder="Emoji (es. 💎, ⚔️, 👑)">
+                <button class="btn-buy" style="background:#e67e22;" onclick="adminCreateProduct()">PUBBLICA NELLO STORE</button>
+            </div>
+            <div class="staff-panel">
+                <h3>🎫 GIFTCARD</h3>
+                <input type="text" placeholder="Codice Sconto">
+                <input type="number" placeholder="Valore (€)">
+                <button class="btn-buy" style="background:#2ecc71;" onclick="alert('Giftcard salvata!')">CREA CODICE</button>
             </div>
         </div>
-
-        <div id="staff-page" class="page">
-            <h1 style="border-left: 5px solid #e67e22; padding-left: 15px;">PANNELLO STAFF</h1>
-            <div class="grid" style="grid-template-columns: 1fr 1fr;">
-                
-                <div class="staff-panel">
-                    <h3>➕ Nuovo Prodotto</h3>
-                    <input type="text" id="st-name" placeholder="Nome Oggetto">
-                    <input type="number" id="st-price" placeholder="Prezzo (€)">
-                    <input type="text" id="st-icon" placeholder="Emoji Icona (es. 🛡️)">
-                    <button class="btn-admin" onclick="adminCreateProduct()">Pubblica Prodotto</button>
-                </div>
-
-                <div class="staff-panel">
-                    <h3>🎫 Genera Giftcard</h3>
-                    <input type="text" id="st-gift" placeholder="Codice (es. ESTATE2024)">
-                    <input type="number" id="st-val" placeholder="Valore Sconto (€)">
-                    <button class="btn-admin" style="background:#27ae60;" onclick="alert('Giftcard generata nel database!')">Salva Giftcard</button>
-                </div>
-
-            </div>
-            <button onclick="showPage('store-page')" style="background:none; color:white; border:1px solid white; padding:10px; margin-top:30px; cursor:pointer; border-radius:5px;">← Esci dal Pannello</button>
-        </div>
-
+        <button onclick="showPage('store-page')" style="background:none; color:white; border:1px solid white; padding:10px; margin-top:30px; cursor:pointer; border-radius:5px;">← ESCI DALLO STAFF</button>
     </div>
 
     <script>
-        let cart = [];
-        let totalPrice = 0;
+        // Prodotti di base
+        let defaultProducts = [
+            { name: 'Rank Legend', price: 19.99, icon: '👑', desc: 'Vantaggi esclusivi e prefisso VIP' },
+            { name: 'Kit Netherite', price: 5.50, icon: '⚔️', desc: 'Equipaggiamento massimo livello' },
+            { name: '32 Diamanti', price: 2.00, icon: '💎', desc: 'Risorse per il tuo inventario' },
+            { name: 'Unban Pass', price: 15.00, icon: '🛡️', desc: 'Ritorna a giocare sul server' },
+            { name: 'Fly Survival', price: 10.00, icon: '🕊️', desc: 'Abilita il volo per 30 giorni' },
+            { name: 'Chiave Cassa', price: 1.50, icon: '🔑', desc: 'Apri una cassa leggendaria' }
+        ];
 
-        // Navigazione
+        let products = JSON.parse(localStorage.getItem('mediaMC_data')) || defaultProducts;
+        let cart = [];
+
+        function renderStore() {
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = "";
+            products.forEach(p => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <div class="card-img">${p.icon}</div>
+                        <h3>${p.name.toUpperCase()}</h3>
+                        <p style="font-size:0.85rem; opacity:0.7">${p.desc || 'Pacchetto MediaMC'}</p>
+                        <span class="price">€${p.price.toFixed(2)}</span>
+                        <button class="btn-buy" onclick="addToCart('${p.name}', ${p.price})">AGGIUNGI</button>
+                    </div>
+                `;
+            });
+        }
+
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(id === 'store-page') toggleCart(false);
+            window.scrollTo(0,0);
         }
 
-        // Sidebar
-        function toggleCart(force) {
-            const sb = document.getElementById('cart-sidebar');
-            if(force === false) sb.classList.remove('active');
-            else sb.classList.toggle('active');
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('active');
         }
 
-        // Logica Carrello
         function addToCart(name, price) {
             const nick = document.getElementById('playerNick').value;
             if(!nick || nick.trim().length < 3) {
-                alert("⚠️ Errore: Inserisci un Nickname valido prima di procedere!");
-                document.getElementById('playerNick').focus();
+                alert("⚠️ Errore: Inserisci il tuo Nickname Minecraft prima di aggiungere prodotti!");
                 return;
             }
             cart.push({name, price});
             updateCartUI();
-            alert(`✅ ${name} aggiunto al carrello!`);
+            alert("✅ Aggiunto al carrello!");
         }
 
         function updateCartUI() {
             const list = document.getElementById('cart-items-list');
             const count = document.getElementById('cart-count');
             const totalDisp = document.getElementById('cart-total');
-            
             list.innerHTML = "";
-            totalPrice = 0;
+            let total = 0;
 
             cart.forEach((item, index) => {
-                totalPrice += item.price;
+                total += item.price;
                 list.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
-                        <div><b>${item.name}</b></div>
-                        <div>€${item.price.toFixed(2)}</div>
+                    <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <span>${item.name}</span>
+                        <span>€${item.price.toFixed(2)} <span onclick="removeItem(${index})" style="color:#ff4444; cursor:pointer; margin-left:10px;">✕</span></span>
                     </div>
                 `;
             });
 
-            if(cart.length === 0) list.innerHTML = "<p style='text-align:center; color:#999; margin-top:50px;'>Il carrello è vuoto.</p>";
-            
+            if(cart.length === 0) list.innerHTML = "<p style='text-align:center; opacity:0.5; margin-top:50px;'>Il tuo carrello è vuoto.</p>";
             count.innerText = cart.length;
-            totalDisp.innerText = totalPrice.toFixed(2);
+            totalDisp.innerText = total.toFixed(2);
         }
 
-        // Checkout
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
         function startCheckout() {
-            if(cart.length === 0) return alert("Il carrello è vuoto!");
-            
+            if(cart.length === 0) return alert("Carrello vuoto!");
             document.getElementById('chk-nick').innerText = document.getElementById('playerNick').value;
-            document.getElementById('chk-total').innerText = totalPrice.toFixed(2);
+            document.getElementById('chk-total').innerText = document.getElementById('cart-total').innerText;
             document.getElementById('chk-id').innerText = Math.floor(Math.random() * 900000) + 100000;
-            
             showPage('checkout-page');
             toggleCart();
         }
 
-        // Admin Auth
-        function authStaff() {
-            const pass = prompt("Inserisci Password Amministratore:");
-            if(pass === "admin123") {
-                showPage('staff-page');
-            } else {
-                alert("❌ Password errata!");
-            }
+        function finalConfirm() {
+            const email = document.getElementById('checkout-email').value;
+            if(!email || !email.includes('@')) return alert("⚠️ Inserisci un'email valida per la ricevuta!");
+            
+            alert("✅ ORDINE INVIATO!\n\nNickname: " + document.getElementById('chk-nick').innerText + "\nRicevuta inviata a: " + email + "\n\nEffettua ora il bonifico per ricevere gli oggetti.");
+            cart = [];
+            updateCartUI();
+            showPage('store-page');
         }
 
-        // Admin Actions
+        function authStaff() {
+            const pass = prompt("Password Staff:");
+            if(pass === "admin123") showPage('staff-page');
+            else alert("Accesso negato.");
+        }
+
         function adminCreateProduct() {
             const name = document.getElementById('st-name').value;
             const price = parseFloat(document.getElementById('st-price').value);
             const icon = document.getElementById('st-icon').value || "📦";
-
-            if(!name || isNaN(price)) return alert("Compila tutti i campi!");
-
-            const grid = document.getElementById('main-grid');
-            const newCard = document.createElement('div');
-            newCard.className = 'card';
-            newCard.innerHTML = `
-                <div class="card-img">${icon}</div>
-                <h3>${name.toUpperCase()}</h3>
-                <p>Oggetto aggiunto dallo Staff</p>
-                <span class="price">${price.toFixed(2)}</span>
-                <button class="btn-buy" onclick="addToCart('${name}', ${price})">Aggiungi al Carrello</button>
-            `;
-            grid.appendChild(newCard);
-            alert("✨ Prodotto pubblicato con successo nello Store!");
+            if(!name || isNaN(price)) return alert("Dati mancanti!");
+            
+            products.push({name, price, icon, desc: 'Aggiunto dallo staff'});
+            localStorage.setItem('mediaMC_data', JSON.stringify(products));
+            renderStore();
             showPage('store-page');
         }
+
+        renderStore();
     </script>
 </body>
 </html>
