@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediaMC | Gerarchia Staffy</title>
+    <title>MediaMC | Gerarchia Staff</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
@@ -14,6 +14,7 @@
             --sradmin: #ff5555;
             --admin: #ffaa00;
             --mod: #55ff55;
+            --developer: #771ced;
             --bg: #050c10;
             --panel: #0e222d;
             --border: #0f0704;
@@ -36,7 +37,6 @@
             z-index: -1;
         }
 
-        /* NAVBAR IDENTICA ALLE ALTRE CATEGORIE */
         .navbar {
             background: rgba(14, 34, 45, 0.95);
             border-bottom: 3px solid var(--border);
@@ -75,7 +75,6 @@
             color: var(--primary);
         }
 
-        /* STAFF CARDS */
         .staff-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -130,6 +129,7 @@
         .role-owner { background: var(--owner); color: white; }
         .role-sradmin { background: var(--sradmin); color: white; }
         .role-admin { background: var(--admin); color: black; }
+        .role-developer { background: var(--developer); color: white; }
         .role-mod { background: var(--mod); color: black; }
 
         .section-title {
@@ -173,7 +173,7 @@
     <div class="container mx-auto max-w-6xl px-6 py-12">
         
         <div class="text-center mb-16">
-            <h1 style="font-family: 'Montserrat';" class="text-6xl font-black italic uppercase italic tracking-tighter">
+            <h1 style="font-family: 'Montserrat';" class="text-6xl font-black italic uppercase tracking-tighter">
                 Gerarchia <span class="text-orange-500">Staff</span>
             </h1>
         </div>
@@ -192,12 +192,17 @@
             </div>
         </div>
 
-        <div class="section-title">Management</div>
+        <div class="section-title">Management & Sviluppo</div>
         <div class="staff-grid">
             <div class="staff-card">
                 <div class="role-badge role-sradmin">SrAdmin</div>
                 <img src="https://visage.surgeplay.com/bust/512/GiovaELi" class="player-body mx-auto">
                 <div class="player-name">GiovaELi</div>
+            </div>
+            <div class="staff-card">
+                <div class="role-badge role-developer">Web Developer</div>
+                <img src="https://visage.surgeplay.com/bust/512/Controll3r24" class="player-body mx-auto">
+                <div class="player-name">Controll3r24</div>
             </div>
             <div class="staff-card">
                 <div class="role-badge role-admin">Admin</div>
