@@ -9,197 +9,125 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --founder: #ff0000;
-            --owner: #aa0000;
-            --sradmin: #ff5555;
-            --admin: #ffaa00;
-            --mod: #55ff55;
-            --developer: #771ced;
-            --bg: #050c10;
-            --panel: #0e222d;
-            --border: #0f0704;
-            --primary: #ff7300;
+            --founder: #ff0000; --owner: #aa0000; --sradmin: #ff5555;
+            --admin: #ffaa00; --mod: #55ff55; --developer: #771ced;
+            --bg: #050c10; --border: #0f0704; --primary: #ff7300;
         }
 
         body {
             background: var(--bg) url('assets/bg.png') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
+            background-size: cover; color: white; font-family: 'Poppins', sans-serif; margin: 0;
+            overflow-x: hidden;
         }
 
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: rgba(5, 12, 16, 0.9);
-            z-index: -1;
-        }
+        body::before { content: ""; position: fixed; inset: 0; background: rgba(5, 12, 16, 0.9); z-index: -1; }
 
+        /* NAVBAR */
         .navbar {
-            background: rgba(14, 34, 45, 0.95);
-            border-bottom: 3px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: rgba(14, 34, 45, 0.95); border-bottom: 3px solid var(--border);
+            padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
         }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
         .nav-item {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-size: 13px;
-            color: #9ca3af;
-            text-decoration: none;
-            transition: 0.2s;
-            padding: 8px 15px;
-            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif; font-weight: 900; text-transform: uppercase;
+            font-size: 13px; color: #9ca3af; text-decoration: none; padding: 8px 15px; transition: 0.3s;
         }
+        .nav-item:hover, .nav-item.active { color: white; background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
 
-        .nav-item:hover, .nav-item.active {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-item.highlight {
-            color: var(--primary);
-        }
-
-        .staff-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 2.5rem;
-            padding: 2rem 0;
-        }
-
+        /* CARDS */
         .staff-card {
             background: radial-gradient(circle at top left, #163a4d 0%, #0e222d 100%);
-            border: 3px solid var(--border);
-            box-shadow: 0 10px 0 var(--border);
-            border-radius: 2.5rem;
-            padding: 2rem;
-            text-align: center;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid var(--border); box-shadow: 0 10px 0 var(--border);
+            border-radius: 2.5rem; padding: 2rem; text-align: center;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
         }
+        .staff-card:hover { transform: translateY(-12px); filter: brightness(1.2); }
 
-        .staff-card:hover {
-            transform: translateY(-12px);
-        }
-
-        .player-body {
-            height: 200px;
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.6));
-            image-rendering: pixelated;
-        }
+        .player-body { height: 200px; margin-bottom: 1rem; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.6)); image-rendering: pixelated; }
 
         .role-badge {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-size: 10px;
-            letter-spacing: 2px;
-            padding: 5px 18px;
-            border-radius: 50px;
-            display: inline-block;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+            font-family: 'Montserrat', sans-serif; font-weight: 900; text-transform: uppercase;
+            font-size: 10px; letter-spacing: 2px; padding: 5px 18px; border-radius: 50px;
+            display: inline-block; margin-bottom: 1rem; box-shadow: 0 4px 0 rgba(0,0,0,0.3);
         }
 
-        .player-name {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 1.4rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .player-name { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; text-transform: uppercase; }
 
-        /* COLORI RUOLI */
-        .role-founder { background: var(--founder); color: white; }
-        .role-owner { background: var(--owner); color: white; }
-        .role-sradmin { background: var(--sradmin); color: white; }
+        /* RUOLI COLORI */
+        .role-founder { background: var(--founder); }
+        .role-owner { background: var(--owner); }
+        .role-sradmin { background: var(--sradmin); }
         .role-admin { background: var(--admin); color: black; }
-        .role-developer { background: var(--developer); color: white; }
+        .role-developer { background: var(--developer); }
         .role-mod { background: var(--mod); color: black; }
-        
-        /* RUOLO SPECIALE TIAGUZ */
         .role-gay { 
             background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            background-size: 400%;
-            color: white;
-            animation: rainbow 10s linear infinite;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            background-size: 400%; animation: rainbow 10s linear infinite;
         }
+        @keyframes rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 400% 50%; } }
 
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 400% 50%; }
-        }
-
+        /* SEZIONI */
         .section-title {
-            font-family: 'Montserrat', sans-serif;
-            color: #4b5563;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-top: 4rem;
-            margin-bottom: 2rem;
+            font-family: 'Montserrat', sans-serif; color: #4b5563; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 5px; font-size: 14px;
+            display: flex; align-items: center; gap: 15px; margin-top: 4rem; margin-bottom: 2rem;
         }
+        .section-title::after, .section-title::before { content: ""; flex: 1; height: 2px; background: rgba(255,255,255,0.05); }
 
-        .section-title::after, .section-title::before {
-            content: "";
-            flex: 1;
-            height: 2px;
-            background: rgba(255,255,255,0.05);
+        /* MODALE ANIMATO */
+        #descModal {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+            align-items: center; justify-content: center; padding: 20px;
         }
+        .modal-content {
+            background: #0e222d; border: 4px solid var(--border);
+            border-radius: 2.5rem; max-width: 500px; width: 100%; padding: 3rem;
+            box-shadow: 0 0 60px rgba(0,0,0,1);
+            transform: scale(0.8); opacity: 0; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        #descModal.active .modal-content { transform: scale(1); opacity: 1; }
     </style>
 </head>
 <body>
+
+    <div id="descModal" onclick="closeModal()">
+        <div class="modal-content text-center" onclick="event.stopPropagation()">
+            <div id="mBadge" class="role-badge mb-4">RUOLO</div>
+            <h2 id="mName" class="player-name text-4xl mb-6 tracking-tighter">NOME</h2>
+            <div id="mText" class="text-gray-300 text-lg leading-relaxed whitespace-pre-line">DESCRIZIONE</div>
+            <button onclick="closeModal()" class="mt-10 bg-orange-500 hover:bg-orange-600 text-white font-black px-12 py-3 rounded-full transition-all transform hover:scale-105 active:scale-95">CHIUDI</button>
+        </div>
+    </div>
 
     <nav class="navbar">
         <div class="flex items-center gap-4">
             <img src="assets/logo.png" alt="Logo" class="h-10">
             <span class="hidden md:block font-black italic uppercase text-xl">Media<span class="text-orange-500">MC</span></span>
         </div>
-        
         <div class="nav-links">
             <a href="index.html" class="nav-item">Home</a>
             <a href="store.html" class="nav-item">Store</a>
             <a href="staff.html" class="nav-item active">Staff</a>
-            <a href="ban.html" class="nav-item highlight">Bans</a>
+            <a href="ban.html" class="nav-item">Bans</a>
         </div>
     </nav>
 
     <div class="container mx-auto max-w-6xl px-6 py-12">
-        
         <div class="text-center mb-16">
-            <h1 style="font-family: 'Montserrat';" class="text-6xl font-black italic uppercase tracking-tighter">
+            <h1 class="text-6xl font-black italic uppercase tracking-tighter" style="font-family: 'Montserrat';">
                 Gerarchia <span class="text-orange-500">Staff</span>
             </h1>
         </div>
 
         <div class="section-title">Amministrazione Superiore</div>
         <div class="flex flex-wrap justify-center gap-10">
-            <div class="staff-card w-72">
+            <div class="staff-card w-72" onclick="openStaff('PierLio', 'Founder', 'role-founder', 'Il visionario dietro MediaMC.\nGestisce lo sviluppo tecnico e l\'infrastruttura del server.')">
                 <div class="role-badge role-founder">Founder</div>
                 <img src="https://visage.surgeplay.com/bust/512/PierLio" class="player-body mx-auto">
                 <div class="player-name">PierLio</div>
             </div>
-            <div class="staff-card w-72">
+            <div class="staff-card w-72" onclick="openStaff('pasquitos', 'Owner', 'role-owner', 'Proprietario e figura chiave del progetto.\nSi occupa della gestione economica e burocratica.')">
                 <div class="role-badge role-owner">Owner</div>
                 <img src="https://visage.surgeplay.com/bust/512/pasquitos" class="player-body mx-auto">
                 <div class="player-name">pasquitos</div>
@@ -207,18 +135,18 @@
         </div>
 
         <div class="section-title">Management & Sviluppo</div>
-        <div class="staff-grid">
-            <div class="staff-card">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div class="staff-card" onclick="openStaff('GiovaELi', 'SrAdmin', 'role-sradmin', 'Coordinatore senior dello Staff.\nSupervisiona ogni attività interna e risolve i conflitti.')">
                 <div class="role-badge role-sradmin">SrAdmin</div>
                 <img src="https://visage.surgeplay.com/bust/512/GiovaELi" class="player-body mx-auto">
                 <div class="player-name">GiovaELi</div>
             </div>
-            <div class="staff-card">
+            <div class="staff-card" onclick="openStaff('Controll3r24', 'Web Developer', 'role-developer', 'Mente creativa del reparto web.\nSviluppa e mantiene il sito che stai navigando proprio ora.')">
                 <div class="role-badge role-developer">Web Developer</div>
                 <img src="https://visage.surgeplay.com/bust/512/Controll3r24" class="player-body mx-auto">
                 <div class="player-name">Controll3r24</div>
             </div>
-            <div class="staff-card">
+            <div class="staff-card" onclick="openStaff('gaboDoge', 'Admin', 'role-admin', 'Amministratore di sistema.\nGestore dei plugin e della stabilità dei mondi di gioco.')">
                 <div class="role-badge role-admin">Admin</div>
                 <img src="https://visage.surgeplay.com/bust/512/gaboDoge" class="player-body mx-auto">
                 <div class="player-name">gaboDoge</div>
@@ -227,7 +155,7 @@
 
         <div class="section-title">Moderazione</div>
         <div class="flex justify-center">
-            <div class="staff-card w-72">
+            <div class="staff-card w-72" onclick="openStaff('TheBoss8746', 'Moderator', 'role-mod', 'Il martello della giustizia.\nAssicura che il regolamento venga rispettato da tutti i player.')">
                 <div class="role-badge role-mod">Moderator</div>
                 <img src="https://visage.surgeplay.com/bust/512/TheBoss8746" class="player-body mx-auto">
                 <div class="player-name">TheBoss8746</div>
@@ -236,14 +164,35 @@
 
         <div class="section-title">Membri Speciali</div>
         <div class="flex justify-center">
-            <div class="staff-card w-72">
+            <div class="staff-card w-72" onclick="openStaff('tiaguz048', 'Gay', 'role-gay', 'Tiago è ufficialmente gay.\nÈ stato annunciato sui maxi schermi di New York con un Vesuvio in eruzione.\nInnegabile.')">
                 <div class="role-badge role-gay">Gay</div>
                 <img src="https://visage.surgeplay.com/bust/512/tiaguz048" class="player-body mx-auto">
                 <div class="player-name">tiaguz048</div>
             </div>
         </div>
-
     </div>
 
+    <script>
+        function openStaff(name, role, roleClass, desc) {
+            const modal = document.getElementById('descModal');
+            document.getElementById('mName').innerText = name;
+            document.getElementById('mBadge').innerText = role;
+            document.getElementById('mBadge').className = "role-badge " + roleClass;
+            document.getElementById('mText').innerText = desc;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('descModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+    </script>
 </body>
 </html>
