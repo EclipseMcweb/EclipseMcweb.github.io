@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediaMC | Gerarchia Staff</title>
-    <link rel="icon" href="assets/logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
@@ -132,6 +131,20 @@
         .role-admin { background: var(--admin); color: black; }
         .role-developer { background: var(--developer); color: white; }
         .role-mod { background: var(--mod); color: black; }
+        
+        /* RUOLO SPECIALE TIAGUZ */
+        .role-gay { 
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            color: white;
+            animation: rainbow 10s linear infinite;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
 
         .section-title {
             font-family: 'Montserrat', sans-serif;
@@ -218,6 +231,15 @@
                 <div class="role-badge role-mod">Moderator</div>
                 <img src="https://visage.surgeplay.com/bust/512/TheBoss8746" class="player-body mx-auto">
                 <div class="player-name">TheBoss8746</div>
+            </div>
+        </div>
+
+        <div class="section-title">Membri Speciali</div>
+        <div class="flex justify-center">
+            <div class="staff-card w-72">
+                <div class="role-badge role-gay">Gay</div>
+                <img src="https://visage.surgeplay.com/bust/512/tiaguz048" class="player-body mx-auto">
+                <div class="player-name">tiaguz048</div>
             </div>
         </div>
 
