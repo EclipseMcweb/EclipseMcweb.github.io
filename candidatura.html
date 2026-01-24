@@ -3,195 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediaMC | Modulo Candidatura</title>
+    <title>MediaMC | Candidatura Protetta</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #050c10;
-            --panel: #0e222d;
-            --primary: #ff7300;
-            --border: #0f0704;
+        :root { --bg: #050c10; --primary: #ff7300; --border: #0f0704; }
+        body { 
+            background: linear-gradient(rgba(5,12,16,0.9), rgba(5,12,16,0.9)), url('assets/bg.png') center/cover fixed; 
+            color: white; font-family: 'Poppins', sans-serif; 
+            user-select: none; /* Impedisce la selezione del testo */
         }
-
-        body {
-            background: linear-gradient(rgba(5, 12, 16, 0.9), rgba(5, 12, 16, 0.9)), url('assets/bg.png') center/cover fixed;
-            color: white;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .form-input {
-            background: rgba(14, 34, 45, 0.8);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 15px;
-            width: 100%;
-            color: white;
-            transition: 0.3s;
-            outline: none;
-        }
-
-        .form-input:focus {
-            border-color: var(--primary);
-            background: var(--panel);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #9ca3af;
-        }
-
-        .submit-btn {
-            background: var(--primary);
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            transition: 0.3s;
-            box-shadow: 0 6px 0 #b35100;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 0 #b35100;
-        }
-
-        .submit-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #b35100;
-        }
+        .form-input { background: rgba(14,34,45,0.8); border: 2px solid var(--border); border-radius: 12px; padding: 12px; width: 100%; color: white; outline: none; }
+        .hidden { display: none; }
+        .discord-btn { background: #5865F2; font-family: 'Montserrat'; transition: 0.3s; box-shadow: 0 4px 0 #3e48ae; }
+        .discord-btn:hover { background: #4752C4; transform: translateY(-2px); }
     </style>
 </head>
-<body class="min-height-screen flex flex-col">
+<body class="min-h-screen flex flex-col items-center justify-center p-6" oncontextmenu="return false;">
 
-    <nav class="p-6">
-        <a href="apply.html" class="text-gray-400 hover:text-white transition font-bold uppercase text-xs tracking-widest">
-            <i class="fa-solid fa-arrow-left mr-2"></i> Torna ai requisiti
-        </a>
-    </nav>
+    <div id="loginSection" class="text-center bg-[#0e222d] p-10 rounded-[2.5rem] border-4 border-black shadow-2xl max-w-md w-full">
+        <i class="fa-brands fa-discord text-6xl mb-6" style="color: #5865F2;"></i>
+        <h2 class="text-3xl font-black mb-4 uppercase" style="font-family: 'Montserrat';">Verifica Staff</h2>
+        <p class="text-gray-400 mb-8 text-sm">Accedi con Discord per sbloccare il modulo. Questo assicura che tu non sia Tiago.</p>
+        <button onclick="loginWithDiscord()" class="discord-btn w-full py-4 rounded-xl text-white font-bold flex items-center justify-center gap-3 uppercase tracking-wider">
+            Sblocca con Discord
+        </button>
+    </div>
 
-    <div class="container mx-auto max-w-2xl px-6 py-10">
-        <div class="bg-[#0e222d]/80 backdrop-blur-md p-8 md:p-12 rounded-[2.5rem] border-4 border-[#0f0704] shadow-2xl">
-            
-            <div class="text-center mb-10">
-                <h1 class="text-4xl font-black italic uppercase tracking-tighter" style="font-family: 'Montserrat';">
-                    Modulo <span class="text-orange-500">Staff</span>
-                </h1>
-                <p class="text-gray-400 text-sm mt-2">Compila tutti i campi con onestà.</p>
+    <div id="formSection" class="hidden container mx-auto max-w-2xl">
+        <div class="bg-[#0e222d]/90 p-8 md:p-12 rounded-[3rem] border-4 border-black shadow-2xl relative overflow-hidden">
+            <div class="flex items-center gap-4 mb-8 bg-black/40 p-4 rounded-2xl border border-white/5">
+                <img id="userAvatar" class="w-14 h-14 rounded-full border-2 border-orange-500 shadow-lg">
+                <div>
+                    <p class="text-[10px] text-orange-500 uppercase font-black tracking-widest">Identità Confermata</p>
+                    <p id="userName" class="font-bold text-xl text-white"></p>
+                </div>
             </div>
 
             <form id="applyForm" class="space-y-6">
-                <div>
-                    <label>Come ti chiami?</label>
-                    <input type="text" id="nome" class="form-input" placeholder="Inserisci il tuo nome" required>
+                <input type="hidden" id="discordData">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">Età</label>
+                        <select id="eta" class="form-input" required>
+                            <option value="">Seleziona...</option>
+                            <script>for(let i=13; i<=50; i++) document.write(`<option value="${i}">${i} Anni</option>`);</script>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">Città / Stato</label>
+                        <input type="text" id="provenienza" class="form-input" placeholder="Es: Napoli, IT" required>
+                    </div>
                 </div>
 
                 <div>
-                    <label>Quanti anni hai?</label>
-                    <select id="eta" class="form-input" required>
-                        <option value="" disabled selected>Seleziona la tua età</option>
-                        <script>
-                            for(let i=13; i<=50; i++) {
-                                document.write(`<option value="${i}">${i} anni</option>`);
-                            }
-                        </script>
-                    </select>
+                    <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">Passione & Esperienze</label>
+                    <textarea id="esperienze" rows="3" class="form-input" placeholder="Hai mai fatto lo staffer?" required></textarea>
                 </div>
 
                 <div>
-                    <label>Da dove vieni?</label>
-                    <input type="text" id="provenienza" class="form-input" placeholder="Es: Milano, Italia" required>
+                    <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">Perché MediaMC?</label>
+                    <textarea id="perche" rows="4" class="form-input" placeholder="Cosa ti spinge a candidarti qui?" required></textarea>
                 </div>
 
-                <div>
-                    <label>Quanto sei disponibile?</label>
-                    <textarea id="disponibilita" rows="3" class="form-input" placeholder="Es: 3 ore al giorno, pomeriggio e sera" required></textarea>
-                </div>
-
-                <div>
-                    <label>Hai esperienze passate?</label>
-                    <textarea id="esperienze" rows="3" class="form-input" placeholder="Raccontaci se sei stato staffer altrove" required></textarea>
-                </div>
-
-                <div>
-                    <label>Perché dovremmo scegliere te?</label>
-                    <textarea id="perche" rows="4" class="form-input" placeholder="Spiegaci i tuoi punti di forza" required></textarea>
-                </div>
-
-                <div class="pt-6">
-                    <button type="submit" id="submitBtn" class="submit-btn w-full py-4 rounded-xl text-white uppercase tracking-widest text-lg">
-                        Invia Candidatura <i class="fa-solid fa-paper-plane ml-2"></i>
-                    </button>
-                </div>
+                <button type="submit" id="submitBtn" class="w-full bg-orange-500 py-4 rounded-2xl font-black text-xl shadow-[0_6px_0_#b35100] hover:brightness-110 active:translate-y-1 active:shadow-none transition-all">
+                    INVIA MODULO
+                </button>
             </form>
-
         </div>
     </div>
 
     <script>
-        const WEBHOOK_URL = "INSERISCI_QUI_IL_TUO_WEBHOOK_URL"; // <--- METTI IL TUO LINK QUI
+        // CONFIGURAZIONE
+        const CLIENT_ID = "IL_TUO_CLIENT_ID"; 
+        const REDIRECT_URI = window.location.href.split('#')[0];
+        const WEBHOOK_URL = "IL_TUO_WEBHOOK_URL";
 
-        document.getElementById('applyForm').addEventListener('submit', function(e) {
+        // PROTEZIONE CODICE (Ctrl+S, Ctrl+U, F12, ecc)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'p' || e.key === 's')) {
+                e.preventDefault();
+                alert("Protezione MediaMC: Azione non permessa.");
+            }
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+            }
+        });
+
+        // LOGICA OAUTH2
+        function loginWithDiscord() {
+            window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
+        }
+
+        window.onload = () => {
+            const fragment = new URLSearchParams(window.location.hash.slice(1));
+            const accessToken = fragment.get('access_token');
+
+            if (accessToken) {
+                fetch('https://discord.com/api/users/@me', {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                })
+                .then(res => res.json())
+                .then(user => {
+                    // BLOCCO TIAGO DEFINITIVO
+                    if (user.username.toLowerCase().includes("tiago") || user.id === "ID_DI_TIAGO_SE_LO_SAI") {
+                        alert("ERRORE: I sistemi hanno rilevato che sei Tiago. Accesso negato.");
+                        window.location.href = "apply.html";
+                        return;
+                    }
+
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('formSection').classList.remove('hidden');
+                    document.getElementById('userName').innerText = user.username;
+                    document.getElementById('userAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+                    document.getElementById('discordData').value = JSON.stringify(user);
+                });
+            }
+        };
+
+        // INVIO WEBHOOK
+        document.getElementById('applyForm').onsubmit = async (e) => {
             e.preventDefault();
-            
+            const user = JSON.parse(document.getElementById('discordData').value);
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerText = "Invio in corso...";
-
-            // Raccolta dati
-            const formData = {
-                nome: document.getElementById('nome').value,
-                eta: document.getElementById('eta').value,
-                provenienza: document.getElementById('provenienza').value,
-                disponibilita: document.getElementById('disponibilita').value,
-                esperienze: document.getElementById('esperienze').value,
-                perche: document.getElementById('perche').value
-            };
-
-            // Formattazione per Discord
-            const discordPayload = {
-                username: "MediaMC Application System",
-                avatar_url: "https://i.imgur.com/your-logo.png", // Metti link logo se vuoi
+            btn.innerText = "CARICAMENTO...";
+            
+            const payload = {
                 embeds: [{
-                    title: "🚀 Nuova Candidatura Staff!",
-                    color: 16743168, // Colore Arancione
+                    title: "🌋 NUOVA CANDIDATURA STAFF",
+                    color: 16743168,
+                    thumbnail: { url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` },
                     fields: [
-                        { name: "👤 Nome", value: formData.nome, inline: true },
-                        { name: "🎂 Età", value: formData.eta + " anni", inline: true },
-                        { name: "📍 Provenienza", value: formData.provenienza, inline: true },
-                        { name: "⏰ Disponibilità", value: formData.disponibilita },
-                        { name: "📜 Esperienze", value: formData.esperienze },
-                        { name: "💡 Motivazione", value: formData.perche }
+                        { name: "👤 Utente Discord", value: `<@${user.id}> (${user.username})`, inline: true },
+                        { name: "🎂 Età", value: document.getElementById('eta').value, inline: true },
+                        { name: "📍 Provenienza", value: document.getElementById('provenienza').value, inline: true },
+                        { name: "📜 Esperienze", value: document.getElementById('esperienze').value },
+                        { name: "💡 Motivazione", value: document.getElementById('perche').value }
                     ],
-                    footer: { text: "Candidatura inviata dal sito web MediaMC" },
+                    footer: { text: `ID Discord: ${user.id} | MediaMC System` },
                     timestamp: new Date()
                 }]
             };
 
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(discordPayload)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("Candidatura inviata con successo! Verrai ricontattato presto.");
-                    window.location.href = "apply.html";
-                } else {
-                    throw new Error();
-                }
-            })
-            .catch(error => {
-                alert("Errore durante l'invio. Verifica il Webhook o riprova più tardi.");
-                btn.disabled = false;
-                btn.innerText = "Invia Candidatura";
-            });
-        });
+            await fetch(WEBHOOK_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            alert("Grazie! La tua candidatura è stata inviata ai Founder.");
+            window.location.href = "index.html";
+        };
     </script>
-
 </body>
 </html>
