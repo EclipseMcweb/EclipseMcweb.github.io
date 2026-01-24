@@ -3,114 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediaMC | Candidatura Protetta</title>
+    <title>MediaMC | Sistema Avanzato</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
-        :root { --bg: #050c10; --primary: #ff7300; --border: #0f0704; }
-        body { 
-            background: linear-gradient(rgba(5,12,16,0.9), rgba(5,12,16,0.9)), url('assets/bg.png') center/cover fixed; 
-            color: white; font-family: 'Poppins', sans-serif; 
-            user-select: none; /* Impedisce la selezione del testo */
-        }
-        .form-input { background: rgba(14,34,45,0.8); border: 2px solid var(--border); border-radius: 12px; padding: 12px; width: 100%; color: white; outline: none; }
+        :root { --bg: #050c10; --primary: #ff7300; --admin: #22c55e; }
+        body { background: #050c10; color: white; font-family: 'Poppins', sans-serif; user-select: none; }
+        .glass { background: rgba(14, 34, 45, 0.95); border: 4px solid #000; border-radius: 2rem; }
+        .form-input { background: rgba(0,0,0,0.3); border: 2px solid #0f0704; border-radius: 10px; padding: 12px; width: 100%; color: white; outline: none; }
         .hidden { display: none; }
-        .discord-btn { background: #5865F2; font-family: 'Montserrat'; transition: 0.3s; box-shadow: 0 4px 0 #3e48ae; }
-        .discord-btn:hover { background: #4752C4; transform: translateY(-2px); }
+        .admin-border { border-color: var(--admin) !important; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6" oncontextmenu="return false;">
+<body class="min-h-screen p-6 flex flex-col items-center" oncontextmenu="return false;">
 
-    <div id="loginSection" class="text-center bg-[#0e222d] p-10 rounded-[2.5rem] border-4 border-black shadow-2xl max-w-md w-full">
-        <i class="fa-brands fa-discord text-6xl mb-6" style="color: #5865F2;"></i>
-        <h2 class="text-3xl font-black mb-4 uppercase" style="font-family: 'Montserrat';">Verifica Staff</h2>
-        <p class="text-gray-400 mb-8 text-sm">Accedi con Discord per sbloccare il modulo. Questo assicura che tu non sia Tiago.</p>
-        <button onclick="loginWithDiscord()" class="discord-btn w-full py-4 rounded-xl text-white font-bold flex items-center justify-center gap-3 uppercase tracking-wider">
-            Sblocca con Discord
-        </button>
+    <div id="loginSection" class="mt-20 text-center glass p-10 max-w-md w-full shadow-2xl">
+        <i class="fa-brands fa-discord text-6xl mb-6 text-[#5865F2]"></i>
+        <h2 class="text-3xl font-black mb-4 uppercase font-[Montserrat]">Accesso MediaMC</h2>
+        <button onclick="loginWithDiscord()" class="bg-[#5865F2] w-full py-4 rounded-xl font-bold hover:scale-105 transition">ENTRA CON DISCORD</button>
     </div>
 
-    <div id="formSection" class="hidden container mx-auto max-w-2xl">
-        <div class="bg-[#0e222d]/90 p-8 md:p-12 rounded-[3rem] border-4 border-black shadow-2xl relative overflow-hidden">
-            <div class="flex items-center gap-4 mb-8 bg-black/40 p-4 rounded-2xl border border-white/5">
-                <img id="userAvatar" class="w-14 h-14 rounded-full border-2 border-orange-500 shadow-lg">
+    <div id="adminPanel" class="hidden w-full max-w-4xl mb-6 p-6 glass admin-border">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-green-500 font-black uppercase"><i class="fa-solid fa-user-shield mr-2"></i> Admin Mode Attiva</h2>
+            <button onclick="addNewField()" class="bg-green-600 px-4 py-2 rounded-lg text-xs font-bold hover:bg-green-500">AGGIUNGI DOMANDA +</button>
+        </div>
+        <p class="text-gray-400 text-xs">Le modifiche fatte qui appariranno immediatamente nel modulo sotto.</p>
+    </div>
+
+    <div id="formSection" class="hidden w-full max-w-2xl glass p-8 shadow-2xl">
+        <div class="flex items-center gap-4 mb-10 bg-black/20 p-4 rounded-2xl">
+            <img id="userAvatar" class="w-14 h-14 rounded-full border-2 border-orange-500">
+            <p id="userName" class="font-black text-xl"></p>
+        </div>
+
+        <form id="applyForm" class="space-y-6">
+            <div id="dynamicFields" class="space-y-6">
                 <div>
-                    <p class="text-[10px] text-orange-500 uppercase font-black tracking-widest">Identità Confermata</p>
-                    <p id="userName" class="font-bold text-xl text-white"></p>
+                    <label class="text-xs font-bold text-gray-500 uppercase">Da dove vieni?</label>
+                    <input type="text" class="form-input" name="provenienza" required>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase">Perché scegli MediaMC?</label>
+                    <textarea class="form-input" name="motivazione" rows="3" required></textarea>
                 </div>
             </div>
-
-            <form id="applyForm" class="space-y-6">
-                <input type="hidden" id="discordData">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">Età</label>
-                        <select id="eta" class="form-input" required>
-                            <option value="">Seleziona...</option>
-                            <script>for(let i=13; i<=50; i++) document.write(`<option value="${i}">${i} Anni</option>`);</script>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">Città / Stato</label>
-                        <input type="text" id="provenienza" class="form-input" placeholder="Es: Napoli, IT" required>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">Passione & Esperienze</label>
-                    <textarea id="esperienze" rows="3" class="form-input" placeholder="Hai mai fatto lo staffer?" required></textarea>
-                </div>
-
-                <div>
-                    <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">Perché MediaMC?</label>
-                    <textarea id="perche" rows="4" class="form-input" placeholder="Cosa ti spinge a candidarti qui?" required></textarea>
-                </div>
-
-                <button type="submit" id="submitBtn" class="w-full bg-orange-500 py-4 rounded-2xl font-black text-xl shadow-[0_6px_0_#b35100] hover:brightness-110 active:translate-y-1 active:shadow-none transition-all">
-                    INVIA MODULO
-                </button>
-            </form>
-        </div>
+            
+            <button type="submit" id="submitBtn" class="w-full bg-orange-500 py-4 rounded-xl font-black text-xl shadow-[0_6px_0_#b35100]">INVIA CANDIDATURA</button>
+        </form>
     </div>
 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
-        // CONFIGURAZIONE
-        const CLIENT_ID = "1464664756886700287"; 
+        const CLIENT_ID = "1464664756886700287";
+        const ADMIN_ROLE_ID = "1451211127500443690";
+        const GUILD_ID = "1402663661713101004"; // Inserisci l'ID del tuo server Discord
         const REDIRECT_URI = window.location.href.split('#')[0];
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1464663861008531478/ZDUmRSPyDRyf0URQ843KfOXBJyTz1lcFiswnaewSwSMf3sQHMJKCnLPwj9OejQh5CQBx";
 
-        // PROTEZIONE CODICE (Ctrl+S, Ctrl+U, F12, ecc)
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'p' || e.key === 's')) {
-                e.preventDefault();
-                alert("Protezione MediaMC: Azione non permessa.");
-            }
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-                e.preventDefault();
-            }
-        });
-
-        // LOGICA OAUTH2
-        function loginWithDiscord() {
-            window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
+        function notify(msg, color = "#ff7300") {
+            Toastify({ text: msg, duration: 3000, style: { background: color, borderRadius: "10px" } }).showToast();
         }
 
-        window.onload = () => {
+        function loginWithDiscord() {
+            // Aggiunto scope per vedere i ruoli nel server
+            const scope = encodeURIComponent("identify guilds.members.read");
+            window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${scope}`;
+        }
+
+        window.onload = async () => {
             const fragment = new URLSearchParams(window.location.hash.slice(1));
             const accessToken = fragment.get('access_token');
 
             if (accessToken) {
-                fetch('https://discord.com/api/users/@me', {
-                    headers: { Authorization: `Bearer ${accessToken}` }
-                })
-                .then(res => res.json())
-                .then(user => {
-                    // BLOCCO TIAGO DEFINITIVO
-                    if (user.username.toLowerCase().includes("tiago") || user.id === "ID_DI_TIAGO_SE_LO_SAI") {
-                        alert("ERRORE: I sistemi hanno rilevato che sei Tiago. Accesso negato.");
-                        window.location.href = "apply.html";
+                try {
+                    // Prendi dati utente
+                    const userRes = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${accessToken}` } });
+                    const user = await userRes.json();
+
+                    // Prendi dati membro nel server per controllare i ruoli
+                    const memberRes = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, { headers: { Authorization: `Bearer ${accessToken}` } });
+                    const memberData = await memberRes.json();
+
+                    // Controllo Ruolo Admin
+                    if (memberData.roles && memberData.roles.includes(ADMIN_ROLE_ID)) {
+                        document.getElementById('adminPanel').classList.remove('hidden');
+                        notify("ADMIN MODE ATTIVATA", "#22c55e");
+                    }
+
+                    // Se non è admin e si chiama Tiago, blocca
+                    if (user.username.toLowerCase().includes("tiago") && (!memberData.roles || !memberData.roles.includes(ADMIN_ROLE_ID))) {
+                        notify("Tiago rilevato. Accesso negato.", "#ef4444");
                         return;
                     }
 
@@ -118,39 +103,57 @@
                     document.getElementById('formSection').classList.remove('hidden');
                     document.getElementById('userName').innerText = user.username;
                     document.getElementById('userAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
-                    document.getElementById('discordData').value = JSON.stringify(user);
-                });
+                    window.userData = user;
+
+                } catch (err) {
+                    notify("Errore: Assicurati di essere nel server Discord.", "#ef4444");
+                }
             }
         };
 
-        // INVIO WEBHOOK
+        // Funzione Admin: Aggiungi Domanda
+        function addNewField() {
+            const label = prompt("Inserisci la domanda:");
+            if (label) {
+                const container = document.getElementById('dynamicFields');
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label class="text-xs font-bold text-gray-500 uppercase">${label}</label>
+                    <input type="text" class="form-input" name="${label}" placeholder="Risposta...">
+                `;
+                container.appendChild(div);
+                notify("Domanda aggiunta!");
+            }
+        }
+
+        // Invio Webhook
         document.getElementById('applyForm').onsubmit = async (e) => {
             e.preventDefault();
-            const user = JSON.parse(document.getElementById('discordData').value);
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerText = "CARICAMENTO...";
-            
+
+            const fields = [];
+            const inputs = e.target.querySelectorAll('input[type="text"], textarea');
+            inputs.forEach(i => {
+                fields.push({ name: i.previousElementSibling.innerText, value: i.value || "N/A", inline: false });
+            });
+
             const payload = {
                 embeds: [{
-                    title: "🌋 NUOVA CANDIDATURA STAFF",
+                    title: "🌋 Candidatura MediaMC",
                     color: 16743168,
-                    thumbnail: { url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` },
+                    thumbnail: { url: `https://cdn.discordapp.com/avatars/${window.userData.id}/${window.userData.avatar}.png` },
                     fields: [
-                        { name: "👤 Utente Discord", value: `<@${user.id}> (${user.username})`, inline: true },
-                        { name: "🎂 Età", value: document.getElementById('eta').value, inline: true },
-                        { name: "📍 Provenienza", value: document.getElementById('provenienza').value, inline: true },
-                        { name: "📜 Esperienze", value: document.getElementById('esperienze').value },
-                        { name: "💡 Motivazione", value: document.getElementById('perche').value }
+                        { name: "👤 Utente", value: `<@${window.userData.id}>`, inline: true },
+                        ...fields
                     ],
-                    footer: { text: `ID Discord: ${user.id} | MediaMC System` },
                     timestamp: new Date()
                 }]
             };
 
-            await fetch(WEBHOOK_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-            alert("Grazie! La tua candidatura è stata inviata ai Founder.");
-            window.location.href = "index.html";
+            await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            notify("Inviato con successo!", "#22c55e");
+            setTimeout(() => window.location.reload(), 2000);
         };
     </script>
 </body>
